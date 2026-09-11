@@ -1,0 +1,380 @@
+---
+import QRCode from "qrcode";
+
+import { MenuExplorer } from "../components/MenuExplorer";
+import { menuContentStatus, menuSections, restaurant } from "../data/menu";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  createWhatsAppUrl,
+  getConfigurationStatus,
+  getSafePublicMenuUrl,
+} from "../lib/siteLinks";
+
+const whatsappUrl = createWhatsAppUrl({
+  number: restaurant.whatsapp.number,
+  display: restaurant.whatsapp.display,
+  message: restaurant.whatsapp.defaultMessage,
+  placeholder: restaurant.whatsapp.placeholder,
+});
+const publicMenuUrl = getSafePublicMenuUrl(restaurant.menuUrl);
+const qrSvg = publicMenuUrl
+  ? await QRCode.toString(publicMenuUrl, {
+      type: "svg",
+      errorCorrectionLevel: "M",
+      margin: 1,
+      color: { dark: "#283127", light: "#fffaf0" },
+    })
+  : null;
+const whatsappReady = whatsappUrl !== null;
+const pendingBusinessData =
+  restaurant.location.placeholder ||
+  restaurant.schedule.placeholder ||
+  !whatsappReady;
+const hasPendingContent = menuContentStatus.placeholder || pendingBusinessData;
+const pendingNotice = [
+  menuContentStatus.placeholder
+    ? "Los sabores y precios son ejemplos claramente señalados."
+    : "",
+  pendingBusinessData
+    ? "Los datos comerciales pendientes tampoco representan información real."
+    : "",
+]
+  .filter(Boolean)
+  .join(" ");
+const scheduleStatus = getConfigurationStatus(restaurant.schedule.placeholder);
+const locationStatus = getConfigurationStatus(restaurant.location.placeholder);
+const whatsappStatus = getConfigurationStatus(!whatsappReady);
+const restaurantInitials = restaurant.name
+  .split(/\s+/)
+  .map((word) => word.at(0) ?? "")
+  .join("")
+  .slice(0, 2)
+  .toUpperCase();
+---
+
+<BaseLayout
+  title={`${restaurant.name} · Pizzas y empanadas`}
+  description={`Carta digital de ${restaurant.name}: pizzas y empanadas para descubrir desde el móvil.`}
+>
+  <header class="site-header">
+    <nav class="topbar page-shell" aria-label="Navegación principal">
+      <a
+        class="brand"
+        href="#inicio"
+        aria-label={`${restaurant.name}, volver al inicio`}
+      >
+        <span class="brand-mark" aria-hidden="true">{restaurantInitials}</span>
+        <span>
+          <strong>{restaurant.name}</strong>
+          <small>Pizzas &amp; empanadas</small>
+        </span>
+      </a>
+      <a class="nav-order" href="#pedidos">Cómo pedir</a>
+    </nav>
+
+    <div class="hero page-shell" id="inicio">
+      <div class="hero-copy">
+        <p class="eyebrow eyebrow--light">
+          Carta digital{menuContentStatus.placeholder ? " · Maqueta" : ""}
+        </p>
+        <h1>Sabor que<br /><em>nos reúne.</em></h1>
+        <p class="hero-lead">
+          Una carta cálida y sencilla para elegir pizzas y empanadas desde el
+          móvil, justo después de escanear el QR.
+        </p>
+        <div class="hero-actions">
+          <a class="button button--cream" href="#carta-heading">Ver la carta</a>
+          <a class="button button--ghost" href="#informacion">Información</a>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="sun-disc"></div>
+        <svg class="pizza-illustration" viewBox="0 0 420 420">
+          <circle
+            cx="210"
+            cy="210"
+            r="172"
+            fill="#f5c661"
+            stroke="#f4ead8"
+            stroke-width="18"></circle>
+          <circle cx="210" cy="210" r="145" fill="#d95f3f"></circle>
+          <path
+            d="M102 172c35-66 108-93 173-63 40 18 70 55 79 97-75 28-175 20-252-34Z"
+            fill="#f7dc8b"></path>
+          <g fill="#f7ead0">
+            <circle cx="158" cy="251" r="33"></circle><circle
+              cx="260"
+              cy="175"
+              r="31"></circle>
+            <circle cx="265" cy="283" r="29"></circle><circle
+              cx="142"
+              cy="132"
+              r="26"></circle>
+          </g>
+          <g fill="#8ea15d">
+            <path d="M183 205c27-25 45-6 14 20-18 15-32 5-14-20Z"></path>
+            <path d="M306 225c26-22 41-3 12 20-17 13-28 1-12-20Z"></path>
+            <path d="M190 305c24-19 38 0 10 19-17 11-27-1-10-19Z"></path>
+          </g>
+          <g fill="#a92f2d">
+            <circle cx="115" cy="218" r="18"></circle><circle
+              cx="321"
+              cy="167"
+              r="18"></circle>
+            <circle cx="229" cy="239" r="18"></circle><circle
+              cx="305"
+              cy="316"
+              r="18"></circle>
+          </g>
+          <path
+            d="M93 320c81 70 202 65 277-10"
+            fill="none"
+            stroke="#2b3527"
+            stroke-linecap="round"
+            stroke-width="9"
+            opacity=".22"></path>
+        </svg>
+        <span class="art-note art-note--top">Masa<br />con tiempo</span>
+        <span class="art-note art-note--bottom">Hecho para<br />compartir</span>
+      </div>
+    </div>
+
+    <div class="hero-ticker" aria-label="Especialidades de la casa">
+      <span>Pizza artesanal</span><i aria-hidden="true">◆</i>
+      <span>Empanadas doradas</span><i aria-hidden="true">◆</i>
+      <span>Pedidos sencillos</span><i aria-hidden="true">◆</i>
+      <span>
+        {menuContentStatus.placeholder ? "Sabores por confirmar" : "Carta actualizada"}
+      </span>
+    </div>
+  </header>
+
+  <main id="contenido">
+    {
+      hasPendingContent && (
+        <aside
+          class="draft-notice page-shell"
+          aria-label="Aviso sobre contenido pendiente"
+        >
+          <span class="notice-icon" aria-hidden="true">✦</span>
+          <div>
+            <strong>
+              {menuContentStatus.placeholder
+                ? "Esta es una maqueta editable"
+                : "Faltan datos por confirmar"}
+            </strong>
+            <p>{pendingNotice}</p>
+          </div>
+        </aside>
+      )
+    }
+
+    <div class="page-shell menu-wrap">
+      <MenuExplorer client:visible sections={menuSections} />
+    </div>
+
+    <section
+      class="order-section"
+      id="pedidos"
+      aria-labelledby="pedidos-heading"
+    >
+      <div class="page-shell order-layout">
+        <div class="order-intro">
+          <p class="eyebrow eyebrow--light">Sin complicaciones</p>
+          <h2 id="pedidos-heading">Del antojo<br />a la mesa.</h2>
+          <p>
+            {
+              whatsappReady
+                ? "El flujo convierte una visita desde QR en un pedido directo por WhatsApp."
+                : "El flujo desde QR está preparado; confirma un canal de pedido válido antes de activarlo."
+            }
+          </p>
+          {
+            whatsappUrl ? (
+              <a
+                class="button button--sun"
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.5L3 20.6l1.3-4.8A8.5 8.5 0 1 1 20.5 11.8Z" />
+                  <path d="M8.2 7.4c.2-.4.4-.4.7-.4h.4c.1 0 .3 0 .4.4l.8 1.9c.1.2 0 .4-.1.6l-.6.7c-.2.1-.2.3-.1.5.6 1.2 1.5 2.1 2.7 2.7.2.1.4.1.5-.1l.8-1c.2-.2.4-.2.6-.1l1.8.9c.2.1.3.2.3.4 0 .3-.2 1.5-1.1 2.1-.6.4-1.3.6-2.1.4-1-.2-2.3-.7-4-2.2-1.4-1.3-2.4-2.8-2.7-3.9-.4-1.2 0-2.4.5-2.9.4-.4.8-.5 1.2-.5Z" />
+                </svg>
+                Pedir por WhatsApp
+                <span class="external-link-note">Abre una pestaña nueva</span>
+              </a>
+            ) : (
+              <div class="contact-pending" role="status">
+                <strong>Pedidos online pendientes de configurar</strong>
+                <span>El enlace aparecerá al confirmar un número válido.</span>
+              </div>
+            )
+          }
+        </div>
+
+        <ol class="order-steps">
+          <li>
+            <span>01</span>
+            <div>
+              <strong>Escanea</strong><p>
+                El QR abre esta carta, sin instalar nada.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span>02</span>
+            <div>
+              <strong>Elige</strong><p>
+                Filtra, busca y revisa tamaños y precios.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span>03</span>
+            <div>
+              <strong>Escríbenos</strong><p>
+                {
+                  whatsappReady
+                    ? "WhatsApp abre con un mensaje preparado."
+                    : "El canal de pedido se mostrará cuando esté confirmado."
+                }
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section
+      class="info-section page-shell"
+      id="informacion"
+      aria-labelledby="info-heading"
+    >
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">Antes de venir</p>
+          <h2 id="info-heading">Todo lo importante</h2>
+        </div>
+        <p>
+          {
+            pendingBusinessData
+              ? "La información pendiente se identifica para evitar confundirla con datos reales."
+              : "Información comercial confirmada para preparar tu visita."
+          }
+        </p>
+      </div>
+
+      <div class="info-grid">
+        <article class="info-card info-card--dark">
+          <span class="info-icon" aria-hidden="true">◷</span>
+          <p class="card-kicker">Cuándo</p>
+          <h3>{restaurant.schedule.label}</h3>
+          <p>{restaurant.schedule.detail}</p>
+          <p class="status-copy">{scheduleStatus.description}</p>
+          <span
+            class:list={[
+              "placeholder-chip",
+              {
+                "placeholder-chip--confirmed": !restaurant.schedule.placeholder,
+              },
+            ]}>{scheduleStatus.label}</span
+          >
+        </article>
+        <article class="info-card info-card--clay">
+          <span class="info-icon" aria-hidden="true">⌖</span>
+          <p class="card-kicker">Dónde</p>
+          <h3>{restaurant.location.label}</h3>
+          <p>{restaurant.location.detail}</p>
+          <p class="status-copy">{locationStatus.description}</p>
+          <span
+            class:list={[
+              "placeholder-chip",
+              {
+                "placeholder-chip--confirmed": !restaurant.location.placeholder,
+              },
+            ]}>{locationStatus.label}</span
+          >
+        </article>
+        <article class="info-card info-card--light">
+          <span class="info-icon" aria-hidden="true">✆</span>
+          <p class="card-kicker">Contacto</p>
+          <h3>{restaurant.whatsapp.display}</h3>
+          <p>
+            {
+              whatsappReady
+                ? "Canal de pedidos preparado y validado."
+                : "El número y el mensaje se configuran con variables de entorno."
+            }
+          </p>
+          <p class="status-copy">{whatsappStatus.description}</p>
+          <span
+            class:list={[
+              "placeholder-chip",
+              { "placeholder-chip--confirmed": whatsappReady },
+            ]}>{whatsappStatus.label}</span
+          >
+        </article>
+      </div>
+
+      {
+        qrSvg && publicMenuUrl && (
+          <aside class="qr-share" aria-labelledby="qr-heading">
+            <div
+              class="qr-code"
+              role="img"
+              aria-label={`Código QR con la URL pública confirmada de ${restaurant.name}`}
+            >
+              <Fragment set:html={qrSvg} />
+            </div>
+            <div>
+              <p class="eyebrow">URL pública confirmada</p>
+              <h2 id="qr-heading">Comparte esta carta</h2>
+              <p>
+                Este código se genera durante el build exclusivamente desde
+                <code>PUBLIC_MENU_URL</code> después de validarla.
+              </p>
+              <a href={publicMenuUrl} target="_blank" rel="noopener noreferrer">
+                Comprobar la URL
+                <span class="external-link-note">Abre una pestaña nueva</span>
+              </a>
+            </div>
+          </aside>
+        )
+      }
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="page-shell footer-main">
+      <a
+        class="brand brand--footer"
+        href="#inicio"
+        aria-label={`${restaurant.name}, volver al inicio`}
+      >
+        <span class="brand-mark" aria-hidden="true">{restaurantInitials}</span>
+        <span
+          ><strong>{restaurant.name}</strong><small
+            >Pizzas &amp; empanadas</small
+          ></span
+        >
+      </a>
+      <p>Carta digital preparada para compartir mediante QR.</p>
+      <nav aria-label="Enlaces del pie">
+        <a href="#carta-heading">Carta</a>
+        <a href="#pedidos">Pedidos</a>
+        <a href="#informacion">Información</a>
+      </nav>
+    </div>
+    <div class="page-shell footer-bottom">
+      <small
+        >© {new Date().getFullYear()}
+        {restaurant.name}{menuContentStatus.placeholder
+          ? " · Contenido provisional"
+          : ""}</small
+      >
+      <small>Hecho para disfrutarse sin prisa.</small>
+    </div>
+  </footer>
+</BaseLayout>
