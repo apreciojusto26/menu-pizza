@@ -2,15 +2,13 @@
 import QRCode from "qrcode";
 
 import { ContactCard } from "../components/ContactCard";
+import { LocationCard } from "../components/LocationCard";
 import { MenuExplorer } from "../components/MenuExplorer";
 import { OrderIntro } from "../components/OrderIntro";
+import { ScheduleCard } from "../components/ScheduleCard";
 import { menuContentStatus, menuSections, restaurant } from "../data/menu";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import {
-  createWhatsAppUrl,
-  getConfigurationStatus,
-  getSafePublicMenuUrl,
-} from "../lib/siteLinks";
+import { createWhatsAppUrl, getSafePublicMenuUrl } from "../lib/siteLinks";
 
 const initialContact = {
   number: restaurant.whatsapp.number,
@@ -44,8 +42,6 @@ const pendingBusinessData =
 const menuSheetUrl = import.meta.env.PUBLIC_MENU_SHEET_URL?.trim() || undefined;
 const contactSheetUrl =
   import.meta.env.PUBLIC_CONTACT_SHEET_URL?.trim() || undefined;
-const scheduleStatus = getConfigurationStatus(restaurant.schedule.placeholder);
-const locationStatus = getConfigurationStatus(restaurant.location.placeholder);
 ---
 
 <BaseLayout
@@ -63,7 +59,13 @@ const locationStatus = getConfigurationStatus(restaurant.location.placeholder);
           <img src="/logo-italypizza-mark.png" alt="" width="112" height="78" />
         </span>
         <span>
-          <strong>{restaurant.name}</strong>
+          <img
+            class="brand-wordmark"
+            src="/logo-italypizza.png"
+            alt={restaurant.name}
+            width="113"
+            height="30"
+          />
           <small>Pizzas &amp; empanadas</small>
         </span>
       </a>
@@ -143,7 +145,11 @@ const locationStatus = getConfigurationStatus(restaurant.location.placeholder);
       <span>Empanadas doradas</span><i aria-hidden="true">◆</i>
       <span>Pedidos sencillos</span><i aria-hidden="true">◆</i>
       <span>
-        {menuContentStatus.placeholder ? "Sabores por confirmar" : "Carta actualizada"}
+        {
+          menuContentStatus.placeholder
+            ? "Sabores por confirmar"
+            : "Carta actualizada"
+        }
       </span>
     </div>
   </header>
@@ -226,36 +232,16 @@ const locationStatus = getConfigurationStatus(restaurant.location.placeholder);
       </div>
 
       <div class="info-grid">
-        <article class="info-card info-card--dark">
-          <span class="info-icon" aria-hidden="true">◷</span>
-          <p class="card-kicker">Cuándo</p>
-          <h3>{restaurant.schedule.label}</h3>
-          <p>{restaurant.schedule.detail}</p>
-          <p class="status-copy">{scheduleStatus.description}</p>
-          <span
-            class:list={[
-              "placeholder-chip",
-              {
-                "placeholder-chip--confirmed": !restaurant.schedule.placeholder,
-              },
-            ]}>{scheduleStatus.label}</span
-          >
-        </article>
-        <article class="info-card info-card--clay">
-          <span class="info-icon" aria-hidden="true">⌖</span>
-          <p class="card-kicker">Dónde</p>
-          <h3>{restaurant.location.label}</h3>
-          <p>{restaurant.location.detail}</p>
-          <p class="status-copy">{locationStatus.description}</p>
-          <span
-            class:list={[
-              "placeholder-chip",
-              {
-                "placeholder-chip--confirmed": !restaurant.location.placeholder,
-              },
-            ]}>{locationStatus.label}</span
-          >
-        </article>
+        <ScheduleCard
+          client:visible
+          initialSchedule={restaurant.schedule}
+          sheetUrl={contactSheetUrl}
+        />
+        <LocationCard
+          client:visible
+          initialLocation={restaurant.location}
+          sheetUrl={contactSheetUrl}
+        />
         <ContactCard
           client:visible
           initialContact={initialContact}
@@ -277,8 +263,8 @@ const locationStatus = getConfigurationStatus(restaurant.location.placeholder);
               <p class="eyebrow">URL pública confirmada</p>
               <h2 id="qr-heading">Comparte esta carta</h2>
               <p>
-                Este código apunta directo a <code>/carta</code>, la vista
-                con precios y pedido por WhatsApp, generada a partir de
+                Este código apunta directo a <code>/carta</code>, la vista con
+                precios y pedido por WhatsApp, generada a partir de
                 <code>PUBLIC_MENU_URL</code> después de validarla.
               </p>
               <a href={publicMenuUrl} target="_blank" rel="noopener noreferrer">
@@ -303,12 +289,15 @@ const locationStatus = getConfigurationStatus(restaurant.location.placeholder);
           <img src="/logo-italypizza-mark.png" alt="" width="112" height="78" />
         </span>
         <span
-          ><strong>{restaurant.name}</strong><small
-            >Pizzas &amp; empanadas</small
-          ></span
+          ><img
+            class="brand-wordmark"
+            src="/logo-italypizza.png"
+            alt={restaurant.name}
+            width="113"
+            height="30"
+          /><small>Pizzas &amp; empanadas</small></span
         >
       </a>
-      <p>Carta digital preparada para compartir mediante QR.</p>
       <nav aria-label="Enlaces del pie">
         <a href="#carta-heading">Carta</a>
         <a href="#pedidos">Pedidos</a>
@@ -318,9 +307,9 @@ const locationStatus = getConfigurationStatus(restaurant.location.placeholder);
     <div class="page-shell footer-bottom">
       <small
         >© {new Date().getFullYear()}{" "}
-        {restaurant.name}{menuContentStatus.placeholder
-          ? " · Contenido provisional"
-          : ""}</small
+        {restaurant.name}{
+          menuContentStatus.placeholder ? " · Contenido provisional" : ""
+        }</small
       >
       <small>Hecho para disfrutarse sin prisa.</small>
     </div>

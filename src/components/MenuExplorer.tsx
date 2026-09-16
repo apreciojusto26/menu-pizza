@@ -1,6 +1,7 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
   type KeyboardEvent,
   type ReactElement,
@@ -137,6 +138,31 @@ export function MenuExplorer({
   const [sections, setSections] = useState(initialSections);
   const [activeCategory, setActiveCategory] = useState<ActiveCategory>("all");
   const [query, setQuery] = useState("");
+  const [openPhoto, setOpenPhoto] = useState<{
+    url: string;
+    name: string;
+  } | null>(null);
+  const closePhotoButtonRef = useRef<HTMLButtonElement>(null);
+  const lastFocusedElementRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!openPhoto) return;
+
+    lastFocusedElementRef.current = document.activeElement as HTMLElement;
+    closePhotoButtonRef.current?.focus();
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") setOpenPhoto(null);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+      lastFocusedElementRef.current?.focus();
+    };
+  }, [openPhoto]);
 
   useEffect(() => {
     if (!sheetUrl) return;
@@ -315,12 +341,31 @@ export function MenuExplorer({
                 {section.items.map((item) => {
                   return (
                     <article className="menu-card" key={item.id}>
-                      <div className="dish-thumb">
-                        <DishThumb
-                          imageUrl={item.imageUrl}
-                          sectionId={section.id}
-                        />
-                      </div>
+                      {item.imageUrl ? (
+                        <button
+                          type="button"
+                          className="dish-thumb dish-thumb--button"
+                          onClick={() =>
+                            setOpenPhoto({
+                              url: item.imageUrl!,
+                              name: item.name,
+                            })
+                          }
+                          aria-label={`Ver foto grande de ${item.name}`}
+                        >
+                          <DishThumb
+                            imageUrl={item.imageUrl}
+                            sectionId={section.id}
+                          />
+                        </button>
+                      ) : (
+                        <div className="dish-thumb">
+                          <DishThumb
+                            imageUrl={item.imageUrl}
+                            sectionId={section.id}
+                          />
+                        </div>
+                      )}
                       <div className="dish-body">
                         <div className="dish-title-row">
                           <h4>{item.name}</h4>
@@ -382,6 +427,33 @@ export function MenuExplorer({
           </div>
         )}
       </div>
+
+      {openPhoto && (
+        <div
+          className="photo-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label={openPhoto.name}
+          onClick={() => setOpenPhoto(null)}
+        >
+          <button
+            type="button"
+            className="photo-modal-close"
+            onClick={() => setOpenPhoto(null)}
+            aria-label="Cerrar"
+            ref={closePhotoButtonRef}
+          >
+            ✕
+          </button>
+          <img
+            src={openPhoto.url}
+            alt={openPhoto.name}
+            className="photo-modal-img"
+            onClick={(event) => event.stopPropagation()}
+          />
+          <p className="photo-modal-caption">{openPhoto.name}</p>
+        </div>
+      )}
     </section>
   );
 }

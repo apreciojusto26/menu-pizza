@@ -91,4 +91,49 @@ describe("MenuExplorer", () => {
     expect(screen.queryByText("Muestra")).not.toBeInTheDocument();
     expect(screen.queryByText(/precio de muestra/i)).not.toBeInTheDocument();
   });
+
+  it("abre la foto en un modal al hacer clic y lo cierra con Escape", async () => {
+    const user = userEvent.setup();
+    const sectionsWithPhoto = [
+      {
+        ...menuSections[0]!,
+        items: [
+          {
+            ...menuSections[0]!.items[0]!,
+            imageUrl: "https://example.com/margarita.jpg",
+          },
+          ...menuSections[0]!.items.slice(1),
+        ],
+      },
+      ...menuSections.slice(1),
+    ];
+
+    render(<MenuExplorer sections={sectionsWithPhoto} />);
+
+    expect(
+      screen.queryByRole("dialog", { name: "Margarita" }),
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: /ver foto grande de margarita/i }),
+    );
+
+    const dialog = screen.getByRole("dialog", { name: "Margarita" });
+    expect(dialog).toBeVisible();
+    expect(screen.getByAltText("Margarita")).toHaveAttribute(
+      "src",
+      "https://example.com/margarita.jpg",
+    );
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("no ofrece ampliar el ícono genérico cuando no hay foto real", () => {
+    render(<MenuExplorer sections={menuSections} />);
+
+    expect(
+      screen.queryByRole("button", { name: /ver foto grande/i }),
+    ).not.toBeInTheDocument();
+  });
 });

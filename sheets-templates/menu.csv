@@ -1,0 +1,11 @@
+categoria,nombre,descripcion,etiquetas,precio1_nombre,precio1_valor,precio2_nombre,precio2_valor,foto_url,visible
+pizzas,Margarita,"Tomate, mozzarella y albahaca.",Clásica,Mediana,"9,50",Familiar,15,,si
+pizzas,Huerta,Mozzarella y verduras de temporada.,Vegetariana,Mediana,"10,50",Familiar,16,,si
+pizzas,Fuego,"Tomate, mozzarella y un toque picante.",Picante,Mediana,11,Familiar,17,,si
+pizzas,Especial de la casa,Propuesta especial de la casa.,Nueva,Mediana,"11,50",Familiar,18,,si
+empanadas,Carne suave,"Carne, cebolla y especias suaves.",Favorita,Unidad,"2,90",Caja de 6,16,,si
+empanadas,Pollo especiado,"Pollo, pimiento y cebolla.",,Unidad,"2,90",Caja de 6,16,,si
+empanadas,Jamón y queso,Jamón cocido y queso fundente.,Clásica,Unidad,"2,90",Caja de 6,16,,si
+empanadas,Caprese,"Tomate, mozzarella y albahaca.",Vegetariana,Unidad,"2,90",Caja de 6,16,,si
+empanadas,Cebolla y queso,Cebolla cocinada lentamente y queso.,Vegetariana,Unidad,"2,90",Caja de 6,16,,si
+empanadas,Carne picante,"Carne, cebolla y chile suave.",Picante,Unidad,"3,10",Caja de 6,17,,si
