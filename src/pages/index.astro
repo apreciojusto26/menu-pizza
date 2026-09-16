@@ -1,7 +1,9 @@
 ---
 import QRCode from "qrcode";
 
+import { ContactCard } from "../components/ContactCard";
 import { MenuExplorer } from "../components/MenuExplorer";
+import { OrderIntro } from "../components/OrderIntro";
 import { menuContentStatus, menuSections, restaurant } from "../data/menu";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import {
@@ -10,11 +12,17 @@ import {
   getSafePublicMenuUrl,
 } from "../lib/siteLinks";
 
-const whatsappUrl = createWhatsAppUrl({
+const initialContact = {
   number: restaurant.whatsapp.number,
   display: restaurant.whatsapp.display,
   message: restaurant.whatsapp.defaultMessage,
   placeholder: restaurant.whatsapp.placeholder,
+};
+const whatsappUrl = createWhatsAppUrl({
+  number: initialContact.number,
+  display: initialContact.display,
+  message: initialContact.message,
+  placeholder: initialContact.placeholder,
 });
 const publicSiteUrl = getSafePublicMenuUrl(restaurant.menuUrl);
 const publicMenuUrl = publicSiteUrl
@@ -34,9 +42,10 @@ const pendingBusinessData =
   restaurant.schedule.placeholder ||
   !whatsappReady;
 const menuSheetUrl = import.meta.env.PUBLIC_MENU_SHEET_URL?.trim() || undefined;
+const contactSheetUrl =
+  import.meta.env.PUBLIC_CONTACT_SHEET_URL?.trim() || undefined;
 const scheduleStatus = getConfigurationStatus(restaurant.schedule.placeholder);
 const locationStatus = getConfigurationStatus(restaurant.location.placeholder);
-const whatsappStatus = getConfigurationStatus(!whatsappReady);
 ---
 
 <BaseLayout
@@ -157,35 +166,11 @@ const whatsappStatus = getConfigurationStatus(!whatsappReady);
         <div class="order-intro">
           <p class="eyebrow eyebrow--light">Sin complicaciones</p>
           <h2 id="pedidos-heading">Del antojo<br />a la mesa.</h2>
-          <p>
-            {
-              whatsappReady
-                ? "El flujo convierte una visita desde QR en un pedido directo por WhatsApp."
-                : "El flujo desde QR está preparado; confirma un canal de pedido válido antes de activarlo."
-            }
-          </p>
-          {
-            whatsappUrl ? (
-              <a
-                class="button button--sun"
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <svg aria-hidden="true" viewBox="0 0 24 24">
-                  <path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.5L3 20.6l1.3-4.8A8.5 8.5 0 1 1 20.5 11.8Z" />
-                  <path d="M8.2 7.4c.2-.4.4-.4.7-.4h.4c.1 0 .3 0 .4.4l.8 1.9c.1.2 0 .4-.1.6l-.6.7c-.2.1-.2.3-.1.5.6 1.2 1.5 2.1 2.7 2.7.2.1.4.1.5-.1l.8-1c.2-.2.4-.2.6-.1l1.8.9c.2.1.3.2.3.4 0 .3-.2 1.5-1.1 2.1-.6.4-1.3.6-2.1.4-1-.2-2.3-.7-4-2.2-1.4-1.3-2.4-2.8-2.7-3.9-.4-1.2 0-2.4.5-2.9.4-.4.8-.5 1.2-.5Z" />
-                </svg>
-                Pedir por WhatsApp
-                <span class="external-link-note">Abre una pestaña nueva</span>
-              </a>
-            ) : (
-              <div class="contact-pending" role="status">
-                <strong>Pedidos online pendientes de configurar</strong>
-                <span>El enlace aparecerá al confirmar un número válido.</span>
-              </div>
-            )
-          }
+          <OrderIntro
+            client:visible
+            initialContact={initialContact}
+            sheetUrl={contactSheetUrl}
+          />
         </div>
 
         <ol class="order-steps">
@@ -271,25 +256,11 @@ const whatsappStatus = getConfigurationStatus(!whatsappReady);
             ]}>{locationStatus.label}</span
           >
         </article>
-        <article class="info-card info-card--light">
-          <span class="info-icon" aria-hidden="true">✆</span>
-          <p class="card-kicker">Contacto</p>
-          <h3>{restaurant.whatsapp.display}</h3>
-          <p>
-            {
-              whatsappReady
-                ? "Canal de pedidos preparado y validado."
-                : "El número y el mensaje se configuran con variables de entorno."
-            }
-          </p>
-          <p class="status-copy">{whatsappStatus.description}</p>
-          <span
-            class:list={[
-              "placeholder-chip",
-              { "placeholder-chip--confirmed": whatsappReady },
-            ]}>{whatsappStatus.label}</span
-          >
-        </article>
+        <ContactCard
+          client:visible
+          initialContact={initialContact}
+          sheetUrl={contactSheetUrl}
+        />
       </div>
 
       {

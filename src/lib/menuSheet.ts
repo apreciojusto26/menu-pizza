@@ -1,5 +1,3 @@
-import Papa from "papaparse";
-
 import {
   SECTION_PRESETS,
   type BadgeTone,
@@ -7,6 +5,7 @@ import {
   type MenuSection,
   type PriceOption,
 } from "../data/menu";
+import { fetchSheetRows, normalizeSheetText } from "./sheetCsv";
 
 export interface MenuSheetRow {
   readonly categoria?: string;
@@ -30,12 +29,7 @@ const BADGE_TONE_KEYWORDS: readonly (readonly [
   ["new", ["nueva", "nuevo", "novedad", "new", "proximamente"]],
 ];
 
-const normalize = (value: string): string =>
-  value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("es")
-    .trim();
+const normalize = normalizeSheetText;
 
 const slugify = (value: string): string =>
   normalize(value)
@@ -172,22 +166,9 @@ export const mapSheetRowsToSections = (
 export const fetchMenuFromSheet = async (
   sheetUrl: string,
 ): Promise<readonly MenuSection[] | null> => {
-  try {
-    const response = await fetch(sheetUrl, { cache: "no-store" });
-    if (!response.ok) return null;
+  const rows = await fetchSheetRows<MenuSheetRow>(sheetUrl);
+  if (!rows) return null;
 
-    const csvText = await response.text();
-    const parsed = Papa.parse<MenuSheetRow>(csvText, {
-      header: true,
-      skipEmptyLines: true,
-      transformHeader: (header) => normalize(header).replace(/\s+/g, "_"),
-    });
-
-    if (parsed.data.length === 0) return null;
-
-    const sections = mapSheetRowsToSections(parsed.data);
-    return sections.length > 0 ? sections : null;
-  } catch {
-    return null;
-  }
+  const sections = mapSheetRowsToSections(rows);
+  return sections.length > 0 ? sections : null;
 };

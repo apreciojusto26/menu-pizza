@@ -64,6 +64,24 @@ Si la hoja está vacía, mal configurada, o `PUBLIC_MENU_SHEET_URL` no está
 definida, el sitio no se rompe: muestra la carta de ejemplo incluida en el
 proyecto (`src/data/menu.ts`) como respaldo.
 
+### Cambiar el número de WhatsApp sin redeploy
+
+Mismo mecanismo, pero para el número de pedidos: agregá una **pestaña nueva**
+dentro de la misma Google Sheet (por ejemplo, "Contacto") con una sola fila y
+estas columnas:
+
+| columna          | qué va ahí                                       |
+| ---------------- | ------------------------------------------------ |
+| `numero`         | solo dígitos, con prefijo internacional, sin `+` |
+| `nombre_visible` | ej. `Pedidos Italy Pizza`                        |
+| `mensaje`        | el mensaje que se manda por WhatsApp al escribir |
+
+Publicala igual que la del menú (**Archivo → Compartir → Publicar en la Web →
+CSV**) y pegá ese link en `PUBLIC_CONTACT_SHEET_URL`. A partir de ahí, cambiar
+el número es editar esa fila — no hace falta redeploy ni tocar `.env`. Si esa
+variable queda vacía o la hoja falla, se usan las `PUBLIC_WHATSAPP_*` de abajo
+como respaldo.
+
 ## Editar el contenido a nivel de código
 
 - Carta de ejemplo/respaldo cuando no hay Google Sheet conectada:
@@ -92,6 +110,7 @@ Los precios se almacenan como números y se formatean en euros. Mientras sean ej
 6. Para no reimprimir el QR en futuros cambios, mantén estable esa URL y publica
    las actualizaciones en el mismo dominio.
 
-El número de pedidos sigue la misma regla: solo aparece un enlace cuando
-`PUBLIC_WHATSAPP_CONFIRMED=true` y `PUBLIC_WHATSAPP_NUMBER` contiene entre 8 y 15
-dígitos, con prefijo internacional y sin `+`, espacios ni guiones.
+El botón de pedidos solo aparece con un número válido (8 a 15 dígitos, prefijo
+internacional, sin `+`, espacios ni guiones): desde la fila de
+`PUBLIC_CONTACT_SHEET_URL` si está configurada, o si no, desde
+`PUBLIC_WHATSAPP_NUMBER` cuando además `PUBLIC_WHATSAPP_CONFIRMED=true`.
