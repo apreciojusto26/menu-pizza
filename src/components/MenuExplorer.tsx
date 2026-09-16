@@ -1,16 +1,128 @@
-import { useMemo, useState, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type KeyboardEvent,
+  type ReactElement,
+} from "react";
 
 import {
   formatPrice,
   type MenuSection,
   type MenuSectionId,
 } from "../data/menu";
+import { fetchMenuFromSheet } from "../lib/menuSheet";
 
 interface MenuExplorerProps {
   readonly sections: readonly MenuSection[];
+  readonly sheetUrl?: string | undefined;
 }
 
 type ActiveCategory = "all" | MenuSectionId;
+
+const PLACEHOLDER_THUMB_LABEL =
+  "Ilustración de muestra, no es una foto real del plato";
+
+function PizzaThumb() {
+  return (
+    <svg
+      className="dish-thumb-art"
+      viewBox="0 0 48 48"
+      role="img"
+      aria-label={PLACEHOLDER_THUMB_LABEL}
+    >
+      <path
+        d="M24 5 43 39A22 22 0 0 1 5 39Z"
+        fill="var(--sun)"
+        stroke="var(--clay-dark)"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <circle cx="24" cy="17" r="2.6" fill="var(--clay)" />
+      <circle cx="18" cy="27" r="2.6" fill="var(--clay)" />
+      <circle cx="30" cy="29" r="2.6" fill="var(--clay)" />
+    </svg>
+  );
+}
+
+function EmpanadaThumb() {
+  return (
+    <svg
+      className="dish-thumb-art"
+      viewBox="0 0 48 48"
+      role="img"
+      aria-label={PLACEHOLDER_THUMB_LABEL}
+    >
+      <path
+        d="M6 27Q6 10 24 10Q42 10 42 27Q42 35 24 39Q6 35 6 27Z"
+        fill="var(--sun)"
+        stroke="var(--clay-dark)"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <g fill="var(--clay-dark)">
+        <circle cx="11" cy="25" r="1.6" />
+        <circle cx="17" cy="17" r="1.6" />
+        <circle cx="24" cy="13" r="1.6" />
+        <circle cx="31" cy="17" r="1.6" />
+        <circle cx="37" cy="25" r="1.6" />
+      </g>
+    </svg>
+  );
+}
+
+function GenericThumb() {
+  return (
+    <svg
+      className="dish-thumb-art"
+      viewBox="0 0 48 48"
+      role="img"
+      aria-label={PLACEHOLDER_THUMB_LABEL}
+    >
+      <circle
+        cx="24"
+        cy="24"
+        r="17"
+        fill="var(--sun)"
+        stroke="var(--clay-dark)"
+        strokeWidth="2"
+      />
+      <circle cx="24" cy="24" r="6" fill="var(--paper)" />
+    </svg>
+  );
+}
+
+const SECTION_THUMBS: Record<string, () => ReactElement> = {
+  pizzas: PizzaThumb,
+  empanadas: EmpanadaThumb,
+};
+
+const renderSectionThumb = (sectionId: MenuSectionId): ReactElement => {
+  const Thumb = SECTION_THUMBS[sectionId] ?? GenericThumb;
+  return <Thumb />;
+};
+
+interface DishThumbProps {
+  readonly imageUrl?: string | undefined;
+  readonly sectionId: MenuSectionId;
+}
+
+function DishThumb({ imageUrl, sectionId }: DishThumbProps) {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  if (!imageUrl || imageFailed) {
+    return renderSectionThumb(sectionId);
+  }
+
+  return (
+    <img
+      src={imageUrl}
+      alt=""
+      loading="lazy"
+      onError={() => setImageFailed(true)}
+    />
+  );
+}
 
 const normalize = (value: string): string =>
   value
@@ -18,9 +130,26 @@ const normalize = (value: string): string =>
     .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase("es");
 
-export function MenuExplorer({ sections }: MenuExplorerProps) {
+export function MenuExplorer({
+  sections: initialSections,
+  sheetUrl,
+}: MenuExplorerProps) {
+  const [sections, setSections] = useState(initialSections);
   const [activeCategory, setActiveCategory] = useState<ActiveCategory>("all");
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    if (!sheetUrl) return;
+
+    let cancelled = false;
+    fetchMenuFromSheet(sheetUrl).then((liveSections) => {
+      if (!cancelled && liveSections) setSections(liveSections);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [sheetUrl]);
 
   const filteredSections = useMemo(() => {
     const normalizedQuery = normalize(query.trim());
@@ -183,57 +312,62 @@ export function MenuExplorer({ sections }: MenuExplorerProps) {
               </header>
 
               <div className="menu-grid">
-                {section.items.map((item, itemIndex) => (
-                  <article className="menu-card" key={item.id}>
-                    <div className="dish-number" aria-hidden="true">
-                      {String(itemIndex + 1).padStart(2, "0")}
-                    </div>
-                    <div className="dish-body">
-                      <div className="dish-title-row">
-                        <h4>{item.name}</h4>
-                        {item.placeholder && (
-                          <span className="draft-label">Muestra</span>
+                {section.items.map((item) => {
+                  return (
+                    <article className="menu-card" key={item.id}>
+                      <div className="dish-thumb">
+                        <DishThumb
+                          imageUrl={item.imageUrl}
+                          sectionId={section.id}
+                        />
+                      </div>
+                      <div className="dish-body">
+                        <div className="dish-title-row">
+                          <h4>{item.name}</h4>
+                          {item.placeholder && (
+                            <span className="draft-label">Muestra</span>
+                          )}
+                        </div>
+                        <p>
+                          {item.description}
+                          {item.placeholder && (
+                            <span className="item-draft-copy">
+                              {" "}
+                              Composición de muestra.
+                            </span>
+                          )}
+                        </p>
+                        {item.badges.length > 0 && (
+                          <ul className="badges" aria-label="Características">
+                            {item.badges.map((badge) => (
+                              <li
+                                className={`badge badge--${badge.tone}`}
+                                key={badge.label}
+                              >
+                                {badge.label}
+                              </li>
+                            ))}
+                          </ul>
                         )}
                       </div>
-                      <p>
-                        {item.description}
-                        {item.placeholder && (
-                          <span className="item-draft-copy">
-                            {" "}
-                            Composición de muestra.
-                          </span>
-                        )}
-                      </p>
-                      {item.badges.length > 0 && (
-                        <ul className="badges" aria-label="Características">
-                          {item.badges.map((badge) => (
-                            <li
-                              className={`badge badge--${badge.tone}`}
-                              key={badge.label}
-                            >
-                              {badge.label}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                    <dl className="price-list">
-                      {item.prices.map((price) => (
-                        <div key={price.label}>
-                          <dt>{price.label}</dt>
-                          <dd>
-                            {formatPrice(price)}
-                            {price.placeholder && (
-                              <span className="sr-only">
-                                , precio de muestra
-                              </span>
-                            )}
-                          </dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </article>
-                ))}
+                      <dl className="price-list">
+                        {item.prices.map((price) => (
+                          <div key={price.label}>
+                            <dt>{price.label}</dt>
+                            <dd>
+                              {formatPrice(price)}
+                              {price.placeholder && (
+                                <span className="sr-only">
+                                  , precio de muestra
+                                </span>
+                              )}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </article>
+                  );
+                })}
               </div>
             </section>
           ))

@@ -1,4 +1,4 @@
-export type MenuSectionId = "pizzas" | "empanadas";
+export type MenuSectionId = string;
 
 export type BadgeTone = "classic" | "spicy" | "veggie" | "new";
 
@@ -21,6 +21,7 @@ export interface MenuItem {
   readonly badges: readonly MenuBadge[];
   readonly prices: readonly PriceOption[];
   readonly placeholder: boolean;
+  readonly imageUrl?: string | undefined;
 }
 
 export interface MenuSection {
@@ -64,7 +65,7 @@ export interface RestaurantInfo {
   };
 }
 
-const restaurantName = "La Rueca";
+const restaurantName = "Italy Pizza";
 const envValue = (value: string | undefined): string => value?.trim() ?? "";
 const isConfirmed = (value: string | undefined): boolean => value === "true";
 
@@ -82,6 +83,28 @@ const samplePrice = (label: string, amount: number): PriceOption => ({
   currency: "EUR",
   placeholder: true,
 });
+
+export interface SectionPreset {
+  readonly label: string;
+  readonly shortLabel: string;
+  readonly eyebrow: string;
+  readonly description: string;
+}
+
+export const SECTION_PRESETS: Record<string, SectionPreset> = {
+  pizzas: {
+    label: "Pizzas",
+    shortLabel: "Pizza",
+    eyebrow: "Masa, tiempo y horno",
+    description: "Elige tu tamaño y encuentra una pizza para compartir.",
+  },
+  empanadas: {
+    label: "Empanadas",
+    shortLabel: "Empanada",
+    eyebrow: "Doradas y recién hechas",
+    description: "Elige unidades sueltas o una caja para compartir.",
+  },
+};
 
 export const restaurant: RestaurantInfo = {
   name: restaurantName,
@@ -125,10 +148,7 @@ export const restaurant: RestaurantInfo = {
 export const menuSections: readonly MenuSection[] = [
   {
     id: "pizzas",
-    label: "Pizzas",
-    shortLabel: "Pizza",
-    eyebrow: "Masa, tiempo y horno",
-    description: "Elige tu tamaño y encuentra una pizza para compartir.",
+    ...SECTION_PRESETS.pizzas!,
     placeholder: true,
     items: [
       {
@@ -167,10 +187,7 @@ export const menuSections: readonly MenuSection[] = [
   },
   {
     id: "empanadas",
-    label: "Empanadas",
-    shortLabel: "Empanada",
-    eyebrow: "Doradas y recién hechas",
-    description: "Elige unidades sueltas o una caja para compartir.",
+    ...SECTION_PRESETS.empanadas!,
     placeholder: true,
     items: [
       {

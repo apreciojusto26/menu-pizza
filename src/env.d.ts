@@ -13,6 +13,7 @@ interface ImportMetaEnv {
   readonly PUBLIC_WHATSAPP_DISPLAY?: string;
   readonly PUBLIC_WHATSAPP_MESSAGE?: string;
   readonly PUBLIC_WHATSAPP_CONFIRMED?: string;
+  readonly PUBLIC_MENU_SHEET_URL?: string;
 }
 
 interface ImportMeta {
