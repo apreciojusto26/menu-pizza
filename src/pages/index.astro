@@ -8,6 +8,7 @@ import { OrderIntro } from "../components/OrderIntro";
 import { ScheduleCard } from "../components/ScheduleCard";
 import { menuContentStatus, menuSections, restaurant } from "../data/menu";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { addLogoToQrSvg } from "../lib/qrLogo";
 import { createWhatsAppUrl, getSafePublicMenuUrl } from "../lib/siteLinks";
 
 const initialContact = {
@@ -27,12 +28,14 @@ const publicMenuUrl = publicSiteUrl
   ? new URL("/carta", publicSiteUrl).toString()
   : null;
 const qrSvg = publicMenuUrl
-  ? await QRCode.toString(publicMenuUrl, {
-      type: "svg",
-      errorCorrectionLevel: "M",
-      margin: 1,
-      color: { dark: "#2b1810", light: "#fffaf0" },
-    })
+  ? addLogoToQrSvg(
+      await QRCode.toString(publicMenuUrl, {
+        type: "svg",
+        errorCorrectionLevel: "H",
+        margin: 2,
+        color: { dark: "#2b1810", light: "#fffaf0" },
+      }),
+    )
   : null;
 const whatsappReady = whatsappUrl !== null;
 const pendingBusinessData =
