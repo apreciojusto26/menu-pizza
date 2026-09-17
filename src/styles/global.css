@@ -440,8 +440,23 @@ a {
 
 .carta-order-cta {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
   margin-top: 3.5rem;
+}
+
+.delivery-note {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.delivery-note--light {
+  margin-top: 0.9rem;
+  color: var(--cream);
 }
 
 .carta-footer {
@@ -598,6 +613,18 @@ a {
   color: var(--clay-dark);
   font-size: 0.72rem;
   font-weight: 800;
+}
+
+.section-copy .section-callout {
+  max-width: 40rem;
+  margin-top: 0.85rem;
+  border-left: 3px solid var(--sun);
+  border-radius: 0 0.6rem 0.6rem 0;
+  background: rgba(255, 164, 1, 0.12);
+  padding: 0.65rem 0.95rem;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  line-height: 1.5;
 }
 
 .menu-grid {
@@ -1159,6 +1186,68 @@ button.dish-thumb:focus-visible {
   text-transform: uppercase;
 }
 
+.catering-card {
+  position: relative;
+  overflow: hidden;
+  margin-top: 1.5rem;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.catering-card::after {
+  position: absolute;
+  top: -3rem;
+  right: -2rem;
+  width: 9rem;
+  aspect-ratio: 1;
+  border: 1px dashed rgba(244, 236, 220, 0.35);
+  border-radius: 50%;
+  content: "";
+}
+
+.catering-card h2 {
+  margin: 0 0 1rem;
+  color: var(--sun);
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 4vw, 2rem);
+  font-weight: 700;
+}
+
+.catering-card > p {
+  max-width: 40rem;
+  margin: 0 0 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.catering-card ul {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.catering-card li {
+  position: relative;
+  padding-left: 1.3rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.catering-card li::before {
+  position: absolute;
+  top: 0.55rem;
+  left: 0;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--cream);
+  content: "";
+}
+
 .site-footer {
   color: var(--paper);
   background: #1c241c;
@@ -1291,6 +1380,36 @@ button.dish-thumb:focus-visible {
     min-height: 23rem;
     padding: 2rem;
   }
+}
+
+.whatsapp-float {
+  position: fixed;
+  z-index: 150;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  display: flex;
+  width: 3.25rem;
+  height: 3.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #25d366;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.45);
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.whatsapp-float:hover,
+.whatsapp-float:focus-visible {
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px rgba(37, 211, 102, 0.6);
+}
+
+.whatsapp-float svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  fill: #fff;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -334,6 +334,14 @@ export function MenuExplorer({
                       Sabores de demostración pendientes de confirmar.
                     </p>
                   )}
+                  {section.id === "pizzas" && (
+                    <p className="section-callout">
+                      Todas nuestras pizzas llevan tomate y mozzarella de base —
+                      si preferís sin alguno de los dos, avisanos, el precio no
+                      cambia. También podemos hacerlas con mozzarella sin
+                      lactosa, solo avisanos al pedir.
+                    </p>
+                  )}
                 </div>
               </header>
 

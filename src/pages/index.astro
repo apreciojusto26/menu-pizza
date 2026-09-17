@@ -2,6 +2,7 @@
 import QRCode from "qrcode";
 
 import { ContactCard } from "../components/ContactCard";
+import { FloatingWhatsAppButton } from "../components/FloatingWhatsAppButton";
 import { LocationCard } from "../components/LocationCard";
 import { MenuExplorer } from "../components/MenuExplorer";
 import { OrderIntro } from "../components/OrderIntro";
@@ -180,6 +181,9 @@ const contactSheetUrl =
             initialContact={initialContact}
             sheetUrl={contactSheetUrl}
           />
+          <p class="delivery-note delivery-note--light">
+            Delivery: pedido mínimo 25 € · envío gratis desde 30 €
+          </p>
         </div>
 
         <ol class="order-steps">
@@ -277,6 +281,20 @@ const contactSheetUrl =
           </aside>
         )
       }
+
+      <aside class="catering-card" aria-labelledby="catering-heading">
+        <h2 id="catering-heading">Catering para tu evento</h2>
+        <p>
+          Fiestas patronales, bodas, comuniones, comidas de asociación o
+          cualquier celebración del pueblo. Preparamos cantidad, hora y menú a
+          medida.
+        </p>
+        <ul>
+          <li>Encargo con antelación y señal para reservar fecha</li>
+          <li>Empanadas, pizzas y platos para compartir</li>
+          <li>Servido en tu pueblo, dentro de la comarca de Sayago</li>
+        </ul>
+      </aside>
     </section>
   </main>
 
@@ -316,4 +334,10 @@ const contactSheetUrl =
       <small>Hecho para disfrutarse sin prisa.</small>
     </div>
   </footer>
+
+  <FloatingWhatsAppButton
+    client:load
+    initialContact={initialContact}
+    sheetUrl={contactSheetUrl}
+  />
 </BaseLayout>
