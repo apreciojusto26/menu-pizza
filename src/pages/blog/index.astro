@@ -1,0 +1,69 @@
+---
+export const prerender = true;
+
+import { getCollection } from "astro:content";
+
+import { restaurant } from "../../data/menu";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+);
+---
+
+<BaseLayout
+  title={`Blog · ${restaurant.name}`}
+  description={`Historias sobre cómo hacemos las pizzas y empanadas de ${restaurant.name}.`}
+>
+  <header class="carta-header">
+    <div class="page-shell carta-header-inner">
+      <a
+        class="brand"
+        href="/"
+        aria-label={`${restaurant.name}, ir al sitio completo`}
+      >
+        <span class="brand-mark" aria-hidden="true">
+          <img src="/logo-italypizza-mark.png" alt="" width="112" height="78" />
+        </span>
+        <span>
+          <img
+            class="brand-wordmark"
+            src="/logo-italypizza.png"
+            alt={restaurant.name}
+            width="113"
+            height="30"
+          />
+          <small>Pizzas &amp; empanadas</small>
+        </span>
+      </a>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <div class="page-shell blog-wrap">
+      <p class="eyebrow">Blog</p>
+      <h1>Historias de la cocina</h1>
+
+      <ul class="blog-list">
+        {
+          posts.map((post) => (
+            <li>
+              <a class="blog-list-item" href={`/blog/${post.id}`}>
+                <p class="eyebrow">{post.data.eyebrow}</p>
+                <h2>{post.data.title}</h2>
+                <p>{post.data.description}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </main>
+
+  <footer class="carta-footer">
+    <p>
+      <a href="/">Ver el sitio completo</a> · © {new Date().getFullYear()}{" "}
+      {restaurant.name}
+    </p>
+  </footer>
+</BaseLayout>

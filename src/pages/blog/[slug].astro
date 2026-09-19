@@ -1,0 +1,76 @@
+---
+export const prerender = true;
+
+import { getCollection, render, type CollectionEntry } from "astro:content";
+
+import { restaurant } from "../../data/menu";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+interface Props {
+  readonly post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const publishedLabel = post.data.publishedAt.toLocaleDateString("es-ES", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+---
+
+<BaseLayout
+  title={`${post.data.title} · ${restaurant.name}`}
+  description={post.data.description}
+>
+  <header class="carta-header">
+    <div class="page-shell carta-header-inner">
+      <a
+        class="brand"
+        href="/"
+        aria-label={`${restaurant.name}, ir al sitio completo`}
+      >
+        <span class="brand-mark" aria-hidden="true">
+          <img src="/logo-italypizza-mark.png" alt="" width="112" height="78" />
+        </span>
+        <span>
+          <img
+            class="brand-wordmark"
+            src="/logo-italypizza.png"
+            alt={restaurant.name}
+            width="113"
+            height="30"
+          />
+          <small>Pizzas &amp; empanadas</small>
+        </span>
+      </a>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <article class="page-shell blog-post">
+      <a class="blog-back" href="/blog">← Volver al blog</a>
+      <p class="eyebrow">{post.data.eyebrow}</p>
+      <h1>{post.data.title}</h1>
+      <p class="blog-post-date">{publishedLabel}</p>
+      <div class="blog-content">
+        <Content />
+      </div>
+    </article>
+  </main>
+
+  <footer class="carta-footer">
+    <p>
+      <a href="/">Ver el sitio completo</a> · © {new Date().getFullYear()}{" "}
+      {restaurant.name}
+    </p>
+  </footer>
+</BaseLayout>
