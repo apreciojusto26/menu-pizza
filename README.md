@@ -135,3 +135,59 @@ a tu `.env`, no rompen nada si faltan:
   genera sola un QR (apuntando a `/carta`) en la sección “Comparte esta
   carta”. Si preferís generar el QR vos con otra herramienta apuntando a tu
   dominio + `/carta`, no hace falta esta variable.
+
+## Carrito y pago con tarjeta (SumUp)
+
+Cualquier producto no marcado como `placeholder` se puede agregar al
+carrito desde la carta (botón "Agregar" junto a cada tamaño/precio). El
+carrito vive en el navegador (localStorage, vía nanostores) y se paga en
+`/checkout` con el widget de tarjeta de SumUp.
+
+**A diferencia del resto del sitio, esta parte SÍ necesita un backend**:
+el sitio pasó de ser 100% estático a modo híbrido (`output: "server"` +
+adapter de Vercel) — `index.astro` y `carta.astro` siguen prerenderizadas,
+pero `/checkout` y todo `src/pages/api/**` corren en una función server de
+Vercel. Localmente, `astro dev` también las corre como server, así que las
+siguientes variables son **obligatorias para poder levantar el proyecto en
+absoluto** (no solo para probar un pago real) — sin ellas, Astro se niega a
+cargar esas rutas:
+
+```
+SUMUP_API_KEY=
+SUMUP_MERCHANT_CODE=
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+RESEND_API_KEY=
+ORDER_NOTIFY_EMAIL_FROM=
+ORDER_NOTIFY_EMAIL_TO=
+SITE_URL=
+```
+
+Agregá estas líneas a tu `.env` (con tus valores reales) y, si querés,
+también a `.env.example` con placeholders — ese archivo no se pudo editar
+automáticamente por los permisos del entorno de desarrollo usado para
+construir esta feature.
+
+Qué es cada una:
+
+- **`SUMUP_API_KEY`, `SUMUP_MERCHANT_CODE`**: credenciales de tu cuenta
+  SumUp (Developer Portal → API keys). El total que se cobra siempre se
+  recalcula server-side contra `src/data/menu.ts` (o el Sheet, si
+  `PUBLIC_MENU_SHEET_URL` está configurada) — nunca se confía en un precio
+  que mande el navegador.
+- **`UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`**: una instancia de
+  [Upstash Redis](https://console.upstash.com) (el tier gratis alcanza).
+  Guarda la sesión de cada intento de pago y evita procesar un mismo pago
+  dos veces.
+- **`RESEND_API_KEY`, `ORDER_NOTIFY_EMAIL_FROM`, `ORDER_NOTIFY_EMAIL_TO`**:
+  cuenta de [Resend](https://resend.com) para el email automático que
+  llega al negocio apenas SumUp confirma un pago (detalle del pedido +
+  total). `ORDER_NOTIFY_EMAIL_TO` es el correo que lo recibe.
+- **`SITE_URL`**: opcional en Vercel (usa el dominio de producción del
+  proyecto por defecto), pero recomendable fijarlo explícito para que las
+  URLs de retorno de SumUp sean siempre las correctas.
+
+El pago solo admite tarjeta por ahora (sin Apple Pay / Google Pay todavía).
+El cliente también puede mandar el resumen de su pedido por WhatsApp desde
+la pantalla de confirmación — un botón manual, complementario al aviso
+automático por email.

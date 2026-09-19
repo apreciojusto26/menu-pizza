@@ -12,6 +12,7 @@ import {
   type MenuSection,
   type MenuSectionId,
 } from "../data/menu";
+import { addLine } from "../lib/cart/store";
 import { fetchMenuFromSheet } from "../lib/menuSheet";
 
 interface MenuExplorerProps {
@@ -415,6 +416,16 @@ export function MenuExplorer({
                                 </span>
                               )}
                             </dd>
+                            {!item.placeholder && !price.placeholder && (
+                              <button
+                                type="button"
+                                className="add-to-cart-button"
+                                onClick={() => addLine(item.id, price.label, 1)}
+                                aria-label={`Agregar ${item.name}, ${price.label}, al carrito`}
+                              >
+                                Agregar
+                              </button>
+                            )}
                           </div>
                         ))}
                       </dl>

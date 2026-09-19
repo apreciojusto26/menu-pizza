@@ -1,6 +1,9 @@
 ---
+export const prerender = true;
+
 import QRCode from "qrcode";
 
+import { CartDrawer } from "../components/CartDrawer";
 import { ContactCard } from "../components/ContactCard";
 import { FloatingWhatsAppButton } from "../components/FloatingWhatsAppButton";
 import { LocationCard } from "../components/LocationCard";
@@ -94,53 +97,13 @@ const contactSheetUrl =
 
       <div class="hero-art" aria-hidden="true">
         <div class="sun-disc"></div>
-        <svg class="pizza-illustration" viewBox="0 0 420 420">
-          <circle
-            cx="210"
-            cy="210"
-            r="172"
-            fill="#f5c661"
-            stroke="#f4ead8"
-            stroke-width="18"></circle>
-          <circle cx="210" cy="210" r="145" fill="#d95f3f"></circle>
-          <path
-            d="M102 172c35-66 108-93 173-63 40 18 70 55 79 97-75 28-175 20-252-34Z"
-            fill="#f7dc8b"></path>
-          <g fill="#f7ead0">
-            <circle cx="158" cy="251" r="33"></circle><circle
-              cx="260"
-              cy="175"
-              r="31"></circle>
-            <circle cx="265" cy="283" r="29"></circle><circle
-              cx="142"
-              cy="132"
-              r="26"></circle>
-          </g>
-          <g fill="#356b38">
-            <path d="M183 205c27-25 45-6 14 20-18 15-32 5-14-20Z"></path>
-            <path d="M306 225c26-22 41-3 12 20-17 13-28 1-12-20Z"></path>
-            <path d="M190 305c24-19 38 0 10 19-17 11-27-1-10-19Z"></path>
-          </g>
-          <g fill="#8f1f21">
-            <circle cx="115" cy="218" r="18"></circle><circle
-              cx="321"
-              cy="167"
-              r="18"></circle>
-            <circle cx="229" cy="239" r="18"></circle><circle
-              cx="305"
-              cy="316"
-              r="18"></circle>
-          </g>
-          <path
-            d="M93 320c81 70 202 65 277-10"
-            fill="none"
-            stroke="#2b1810"
-            stroke-linecap="round"
-            stroke-width="9"
-            opacity=".22"></path>
-        </svg>
-        <span class="art-note art-note--top">Masa<br />con tiempo</span>
-        <span class="art-note art-note--bottom">Hecho para<br />compartir</span>
+        <img
+          class="pizza-hero-photo"
+          src="/assets-pizza-hero/pizza_completa.png"
+          alt=""
+          width="1254"
+          height="1254"
+        />
       </div>
     </div>
 
@@ -340,4 +303,5 @@ const contactSheetUrl =
     initialContact={initialContact}
     sheetUrl={contactSheetUrl}
   />
+  <CartDrawer client:load sections={menuSections} sheetUrl={menuSheetUrl} />
 </BaseLayout>

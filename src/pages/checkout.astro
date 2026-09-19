@@ -1,0 +1,59 @@
+---
+export const prerender = true;
+
+import { CheckoutView } from "../components/CheckoutView";
+import { menuSections, restaurant } from "../data/menu";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const initialContact = {
+  number: restaurant.whatsapp.number,
+  display: restaurant.whatsapp.display,
+  message: restaurant.whatsapp.defaultMessage,
+  placeholder: restaurant.whatsapp.placeholder,
+};
+const menuSheetUrl = import.meta.env.PUBLIC_MENU_SHEET_URL?.trim() || undefined;
+const contactSheetUrl =
+  import.meta.env.PUBLIC_CONTACT_SHEET_URL?.trim() || undefined;
+---
+
+<BaseLayout
+  title={`${restaurant.name} · Pagar`}
+  description={`Pagá tu pedido de ${restaurant.name} con tarjeta.`}
+>
+  <header class="carta-header">
+    <div class="page-shell carta-header-inner">
+      <a
+        class="brand"
+        href="/carta"
+        aria-label={`${restaurant.name}, volver a la carta`}
+      >
+        <span class="brand-mark" aria-hidden="true">
+          <img src="/logo-italypizza-mark.png" alt="" width="112" height="78" />
+        </span>
+        <span>
+          <img
+            class="brand-wordmark"
+            src="/logo-italypizza.png"
+            alt={restaurant.name}
+            width="113"
+            height="30"
+          />
+          <small>Pizzas &amp; empanadas</small>
+        </span>
+      </a>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <div class="page-shell checkout-wrap">
+      <h1>Tu pedido</h1>
+      <CheckoutView
+        client:load
+        sections={menuSections}
+        sheetUrl={menuSheetUrl}
+        initialContact={initialContact}
+        contactSheetUrl={contactSheetUrl}
+      />
+    </div>
+  </main>
+</BaseLayout>

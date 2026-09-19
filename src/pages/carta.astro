@@ -1,4 +1,7 @@
 ---
+export const prerender = true;
+
+import { CartDrawer } from "../components/CartDrawer";
 import { FloatingWhatsAppButton } from "../components/FloatingWhatsAppButton";
 import { MenuExplorer } from "../components/MenuExplorer";
 import { WhatsAppOrderButton } from "../components/WhatsAppOrderButton";
@@ -51,16 +54,54 @@ const contactSheetUrl =
         sections={menuSections}
         sheetUrl={menuSheetUrl}
       />
+    </div>
 
+    <div
+      class="delivery-banner"
+      role="region"
+      aria-label="Información de delivery"
+    >
+      <div class="delivery-banner-inner">
+        <p>
+          <svg
+            class="delivery-banner-icon"
+            width="38"
+            height="26"
+            viewBox="0 0 44 30"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="9" cy="22" r="4.2"></circle>
+            <circle cx="35" cy="22" r="4.2"></circle>
+            <rect x="1.5" y="6" width="11" height="8.5" rx="1.5"></rect>
+            <path d="M13.2 22H21L24 17H29"></path>
+            <path d="M35 22L31.5 8.5H28"></path>
+            <path d="M14.5 18.5H21"></path>
+          </svg>
+          <span class="delivery-banner-label">Delivery:</span>
+          <span>pedido mínimo <strong>25 €</strong></span>
+        </p>
+
+        <span class="delivery-banner-sep" aria-hidden="true"></span>
+
+        <p>
+          <span>A partir de <strong>30 €</strong></span>
+          <span class="delivery-banner-pill">¡Envío GRATIS!</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="page-shell carta-order-wrap">
       <div class="carta-order-cta">
         <WhatsAppOrderButton
           client:load
           initialContact={initialContact}
           sheetUrl={contactSheetUrl}
         />
-        <p class="delivery-note">
-          Delivery: pedido mínimo 25 € · envío gratis desde 30 €
-        </p>
       </div>
     </div>
   </main>
@@ -77,4 +118,5 @@ const contactSheetUrl =
     initialContact={initialContact}
     sheetUrl={contactSheetUrl}
   />
+  <CartDrawer client:load sections={menuSections} sheetUrl={menuSheetUrl} />
 </BaseLayout>
