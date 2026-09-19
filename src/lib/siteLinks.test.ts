@@ -1,10 +1,25 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  createWhatsAppShareUrl,
   createWhatsAppUrl,
   getConfigurationStatus,
   getSafePublicMenuUrl,
 } from "./siteLinks";
+
+describe("createWhatsAppShareUrl", () => {
+  it("arma un enlace sin número destino, con el mensaje codificado", () => {
+    expect(createWhatsAppShareUrl("Mira esta carta: https://a.b/carta")).toBe(
+      "https://wa.me/?text=Mira%20esta%20carta%3A%20https%3A%2F%2Fa.b%2Fcarta",
+    );
+  });
+
+  it("recorta espacios en los extremos del mensaje", () => {
+    expect(createWhatsAppShareUrl("  hola  ")).toBe(
+      "https://wa.me/?text=hola",
+    );
+  });
+});
 
 describe("createWhatsAppUrl", () => {
   it("no crea un enlace si WhatsApp sigue marcado como placeholder", () => {

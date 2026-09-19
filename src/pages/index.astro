@@ -5,15 +5,19 @@ import QRCode from "qrcode";
 
 import { CartDrawer } from "../components/CartDrawer";
 import { ContactCard } from "../components/ContactCard";
+import DeliveryBanner from "../components/DeliveryBanner.astro";
 import { FloatingWhatsAppButton } from "../components/FloatingWhatsAppButton";
 import { LocationCard } from "../components/LocationCard";
-import { MenuExplorer } from "../components/MenuExplorer";
 import { OrderIntro } from "../components/OrderIntro";
 import { ScheduleCard } from "../components/ScheduleCard";
 import { menuContentStatus, menuSections, restaurant } from "../data/menu";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { addLogoToQrSvg } from "../lib/qrLogo";
-import { createWhatsAppUrl, getSafePublicMenuUrl } from "../lib/siteLinks";
+import {
+  createWhatsAppShareUrl,
+  createWhatsAppUrl,
+  getSafePublicMenuUrl,
+} from "../lib/siteLinks";
 
 const initialContact = {
   number: restaurant.whatsapp.number,
@@ -42,10 +46,11 @@ const qrSvg = publicMenuUrl
     )
   : null;
 const whatsappReady = whatsappUrl !== null;
-const pendingBusinessData =
-  restaurant.location.placeholder ||
-  restaurant.schedule.placeholder ||
-  !whatsappReady;
+const whatsappShareUrl = publicMenuUrl
+  ? createWhatsAppShareUrl(
+      `Mira, encontré esta carta y quiero compartirla contigo: ${publicMenuUrl}`,
+    )
+  : null;
 const menuSheetUrl = import.meta.env.PUBLIC_MENU_SHEET_URL?.trim() || undefined;
 const contactSheetUrl =
   import.meta.env.PUBLIC_CONTACT_SHEET_URL?.trim() || undefined;
@@ -90,14 +95,18 @@ const contactSheetUrl =
           móvil, justo después de escanear el QR.
         </p>
         <div class="hero-actions">
-          <a class="button button--cream" href="#carta-heading">Ver la carta</a>
+          <a class="button button--cream" href="/carta">Ver la carta</a>
           <a class="button button--ghost" href="#informacion">Información</a>
+        </div>
+        <div class="hero-blog-cta">
+          <a class="button button--sun" href="/blog/beneficios-de-nuestra-masa">
+            Conoce los beneficios de nuestra masa, pincha aquí 👉
+          </a>
         </div>
       </div>
 
       <div class="hero-art">
         <div class="hero-art-visual" aria-hidden="true">
-          <div class="sun-disc"></div>
           <img
             class="pizza-hero-photo"
             src="/pizza_hero.png"
@@ -107,7 +116,6 @@ const contactSheetUrl =
           />
         </div>
         <p class="hero-badge hero-badge--cream">Masa<br />con tiempo</p>
-        <p class="hero-badge hero-badge--leaf">Hecho para<br />compartir</p>
       </div>
     </div>
 
@@ -126,14 +134,6 @@ const contactSheetUrl =
   </header>
 
   <main id="contenido">
-    <div class="page-shell menu-wrap">
-      <MenuExplorer
-        client:visible
-        sections={menuSections}
-        sheetUrl={menuSheetUrl}
-      />
-    </div>
-
     <section
       class="order-section"
       id="pedidos"
@@ -148,9 +148,6 @@ const contactSheetUrl =
             initialContact={initialContact}
             sheetUrl={contactSheetUrl}
           />
-          <p class="delivery-note delivery-note--light">
-            Delivery: pedido mínimo 25 € · envío gratis desde 30 €
-          </p>
         </div>
 
         <ol class="order-steps">
@@ -186,6 +183,40 @@ const contactSheetUrl =
       </div>
     </section>
 
+    {
+      qrSvg && publicMenuUrl && (
+        <section class="qr-section page-shell" aria-labelledby="qr-heading">
+          <aside class="qr-share">
+            <div
+              class="qr-code"
+              role="img"
+              aria-label={`Código QR con la URL pública de la carta de ${restaurant.name}`}
+            >
+              <Fragment set:html={qrSvg} />
+            </div>
+            <div>
+              <p class="eyebrow">Lista para compartir</p>
+              <h2 id="qr-heading">Comparte esta carta</h2>
+              <p class="my-4">
+                Escanea el código tú mismo, o compártela por WhatsApp con
+                quien quieras invitar a pedir.
+              </p>
+              <a
+                href={whatsappShareUrl ?? undefined}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Compartir por WhatsApp
+                <span class="external-link-note">Abre una pestaña nueva</span>
+              </a>
+            </div>
+          </aside>
+        </section>
+      )
+    }
+
+    <DeliveryBanner />
+
     <section
       class="info-section page-shell"
       id="informacion"
@@ -196,13 +227,6 @@ const contactSheetUrl =
           <p class="eyebrow">Antes de venir</p>
           <h2 id="info-heading">Todo lo importante</h2>
         </div>
-        <p>
-          {
-            pendingBusinessData
-              ? "La información pendiente se identifica para evitar confundirla con datos reales."
-              : "Información comercial confirmada para preparar tu visita."
-          }
-        </p>
       </div>
 
       <div class="info-grid">
@@ -222,32 +246,6 @@ const contactSheetUrl =
           sheetUrl={contactSheetUrl}
         />
       </div>
-
-      {
-        qrSvg && publicMenuUrl && (
-          <aside class="qr-share" aria-labelledby="qr-heading">
-            <div
-              class="qr-code"
-              role="img"
-              aria-label={`Código QR con la URL pública de la carta de ${restaurant.name}`}
-            >
-              <Fragment set:html={qrSvg} />
-            </div>
-            <div>
-              <p class="eyebrow">Lista para compartir</p>
-              <h2 id="qr-heading">Comparte esta carta</h2>
-              <p>
-                Escaneá el código o abrí el enlace para ver la carta con precios
-                y pedir directo por WhatsApp.
-              </p>
-              <a href={publicMenuUrl} target="_blank" rel="noopener noreferrer">
-                Abrir la carta
-                <span class="external-link-note">Abre una pestaña nueva</span>
-              </a>
-            </div>
-          </aside>
-        )
-      }
 
       <aside class="catering-card" aria-labelledby="catering-heading">
         <h2 id="catering-heading">Catering para tu evento</h2>
@@ -286,7 +284,7 @@ const contactSheetUrl =
         >
       </a>
       <nav aria-label="Enlaces del pie">
-        <a href="#carta-heading">Carta</a>
+        <a href="/carta">Carta</a>
         <a href="#pedidos">Pedidos</a>
         <a href="#informacion">Información</a>
       </nav>

@@ -6,9 +6,10 @@ import { resolveCanonicalOrigin } from "../lib/site-origin";
 interface Props {
   readonly title: string;
   readonly description: string;
+  readonly noindex?: boolean | undefined;
 }
 
-const { title, description } = Astro.props;
+const { title, description, noindex = false } = Astro.props;
 
 let canonicalOrigin: string;
 try {
@@ -29,6 +30,7 @@ const ogImageUrl = new URL("/og-image.jpg", canonicalOrigin).toString();
     <meta name="viewport" content="width=device-width" />
     <meta name="theme-color" content="#2b1810" />
     <meta name="color-scheme" content="light" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
     <title>{title}</title>
 

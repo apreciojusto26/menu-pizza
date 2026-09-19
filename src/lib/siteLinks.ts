@@ -166,6 +166,14 @@ export const createWhatsAppUrl = ({
   return `https://wa.me/${number}?text=${encodeURIComponent(normalizedMessage)}`;
 };
 
+/**
+ * Enlace de WhatsApp sin número destino: abre el selector de contactos/chats
+ * del propio usuario para que reenvíe el mensaje a quien quiera, en vez de
+ * escribirle al negocio.
+ */
+export const createWhatsAppShareUrl = (message: string): string =>
+  `https://wa.me/?text=${encodeURIComponent(message.trim())}`;
+
 export const getSafePublicMenuUrl = ({
   url,
   placeholder,

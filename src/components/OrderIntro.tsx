@@ -20,7 +20,7 @@ export function OrderIntro({ initialContact, sheetUrl }: OrderIntroProps) {
 
   return (
     <>
-      <p>
+      <p className="order-lead">
         {ready
           ? "El flujo convierte una visita desde QR en un pedido directo por WhatsApp."
           : "El flujo desde QR está preparado; confirma un canal de pedido válido antes de activarlo."}

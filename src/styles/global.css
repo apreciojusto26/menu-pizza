@@ -234,6 +234,10 @@ a {
   margin-top: 2rem;
 }
 
+.hero-blog-cta {
+  margin-top: 1rem;
+}
+
 .button {
   display: inline-flex;
   min-height: 3.25rem;
@@ -334,23 +338,6 @@ a {
   background: var(--paper);
   color: var(--ink);
   transform: rotate(-6deg);
-}
-
-.hero-badge--leaf {
-  bottom: 6%;
-  left: -2%;
-  background: var(--leaf);
-  color: var(--paper);
-  transform: rotate(-6deg);
-}
-
-.sun-disc {
-  position: absolute;
-  width: min(83vw, 27rem);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--clay);
-  filter: drop-shadow(0 28px 38px rgba(0, 0, 0, 0.18));
 }
 
 .pizza-hero-photo {
@@ -513,6 +500,106 @@ a {
   padding-block: 0 6rem;
 }
 
+.blog-wrap {
+  padding-block: 3rem 6rem;
+}
+
+.blog-wrap h1 {
+  margin: 0 0 2rem;
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  font-size: clamp(2.4rem, 8vw, 3.6rem);
+}
+
+.blog-list {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-list-item {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  color: inherit;
+  text-decoration: none;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  transition: translate 160ms ease;
+}
+
+.blog-list-item:hover,
+.blog-list-item:focus-visible {
+  translate: 0 -2px;
+}
+
+.blog-list-item h2 {
+  margin: 0 0 0.5rem;
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+.blog-list-item p:not(.eyebrow) {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.blog-post {
+  padding-block: 3rem 6rem;
+  max-width: 42rem;
+}
+
+.blog-back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: var(--clay-dark);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.blog-post h1 {
+  margin: 0 0 0.5rem;
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  font-size: clamp(2.2rem, 7vw, 3.2rem);
+}
+
+.blog-post-date {
+  margin: 0 0 2rem;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.blog-content {
+  display: grid;
+  gap: 1.1rem;
+  color: var(--ink);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.blog-content h2 {
+  margin: 1rem 0 0;
+  font-family: var(--display);
+  font-size: 1.5rem;
+}
+
+.blog-content strong {
+  color: var(--leaf);
+}
+
+.blog-content ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
 @media (max-width: 40rem) {
   .delivery-banner-sep {
     display: none;
@@ -555,10 +642,40 @@ a {
 .checkout-summary li {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
   border-bottom: 1px solid var(--line);
   padding-bottom: 0.75rem;
   font-size: 0.9rem;
+}
+
+.checkout-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.line-thumb {
+  display: grid;
+  flex: none;
+  width: 2.75rem;
+  aspect-ratio: 1;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: var(--cream);
+}
+
+.line-thumb .dish-thumb-art {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.line-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .checkout-total {
@@ -820,6 +937,11 @@ a {
   color: var(--ink-soft);
   font-size: 0.8rem;
   line-height: 1.5;
+}
+
+.ingredient-highlight {
+  color: var(--leaf);
+  font-weight: 800;
 }
 
 .menu-grid {
@@ -1168,7 +1290,7 @@ button.dish-thumb:focus-visible {
   font-size: clamp(3.4rem, 13vw, 6rem);
 }
 
-.order-intro > p:not(.eyebrow, .demo-caption) {
+.order-intro .order-lead {
   max-width: 35rem;
   margin: 1.35rem 0 2.75rem;
   color: var(--cream);
@@ -1342,11 +1464,14 @@ button.dish-thumb:focus-visible {
   border-style: solid;
 }
 
+.qr-section {
+  padding-block: 4rem 0;
+}
+
 .qr-share {
   display: grid;
   align-items: center;
   gap: 1.5rem;
-  margin-top: 4rem;
   border: 1px solid var(--line);
   border-radius: 1.5rem;
   padding: 1.25rem;
@@ -1711,10 +1836,15 @@ button.dish-thumb:focus-visible {
 
 .cart-drawer-lines li {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: auto 1fr auto;
   gap: 0.4rem 0.75rem;
   border-bottom: 1px solid var(--line);
   padding-bottom: 1rem;
+}
+
+.cart-drawer-lines .line-thumb {
+  grid-row: 1 / 3;
+  align-self: center;
 }
 
 .cart-drawer-line-info {
