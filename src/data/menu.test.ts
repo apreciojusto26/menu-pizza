@@ -21,11 +21,12 @@ describe("datos del menú", () => {
     ).toBe(true);
   });
 
-  it("declara como provisionales las pizzas aún por confirmar", () => {
+  it("marca la carta de pizzas real como confirmada", () => {
     const pizzas = menuSections.find((section) => section.id === "pizzas");
 
     expect(pizzas).toBeDefined();
-    expect(pizzas?.items.every((item) => item.placeholder)).toBe(true);
+    expect(pizzas?.placeholder).toBe(false);
+    expect(pizzas?.items.every((item) => !item.placeholder)).toBe(true);
   });
 
   it("mantiene los datos comerciales sin confirmar visiblemente marcados", () => {
@@ -35,7 +36,7 @@ describe("datos del menú", () => {
   });
 
   it("deriva un único estado provisional desde secciones, platos y precios", () => {
-    expect(menuContentStatus.placeholder).toBe(true);
+    expect(menuContentStatus.placeholder).toBe(false);
 
     const confirmedSection: MenuSection = {
       id: "pizzas",

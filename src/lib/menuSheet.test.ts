@@ -37,16 +37,16 @@ describe("mapSheetRowsToSections", () => {
   it("usa la copia conocida para pizzas y empanadas, y genera una por defecto para categorías nuevas", () => {
     const sections = mapSheetRowsToSections([
       row({ categoria: "pizzas" }),
-      row({ categoria: "Bebidas", nombre: "Agua", precio2_valor: "" }),
+      row({ categoria: "Postres", nombre: "Tiramisú", precio2_valor: "" }),
     ]);
 
     const pizzas = sections.find((section) => section.id === "pizzas");
-    const bebidas = sections.find((section) => section.id === "bebidas");
+    const postres = sections.find((section) => section.id === "postres");
 
     expect(pizzas?.label).toBe("Pizzas");
     expect(pizzas?.eyebrow).toBe("Masa, tiempo y horno");
-    expect(bebidas?.label).toBe("Bebidas");
-    expect(bebidas?.eyebrow).toBe("Más para pedir");
+    expect(postres?.label).toBe("Postres");
+    expect(postres?.eyebrow).toBe("Más para pedir");
   });
 
   it("convierte la coma decimal y admite un solo precio", () => {
