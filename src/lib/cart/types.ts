@@ -1,4 +1,4 @@
-import type { MenuSection, PriceOption } from "../../data/menu";
+import type { MenuSection, MenuSectionId, PriceOption } from "../../data/menu";
 
 export interface CartLine {
   readonly menuItemId: string;
@@ -9,6 +9,8 @@ export interface CartLine {
 export interface ResolvedCartLine extends CartLine {
   readonly itemName: string;
   readonly sectionLabel: string;
+  readonly sectionId: MenuSectionId;
+  readonly imageUrl?: string | undefined;
   readonly price: PriceOption;
   readonly lineTotal: number;
 }

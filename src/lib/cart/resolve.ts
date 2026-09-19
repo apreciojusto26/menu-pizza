@@ -68,6 +68,8 @@ export const resolveCart = (
           quantity: merged.quantity,
           itemName: item.name,
           sectionLabel: section.label,
+          sectionId: section.id,
+          imageUrl: item.imageUrl,
           price,
           lineTotal: roundToCents(price.amount * merged.quantity),
         });

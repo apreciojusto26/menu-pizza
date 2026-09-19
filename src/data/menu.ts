@@ -96,7 +96,7 @@ export const SECTION_PRESETS: Record<string, SectionPreset> = {
     label: "Pizzas",
     shortLabel: "Pizza",
     eyebrow: "Masa, tiempo y horno",
-    description: "Elige tu tamaño y encuentra una pizza para compartir.",
+    description: "",
   },
   entrantes: {
     label: "Entrantes",

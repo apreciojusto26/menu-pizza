@@ -4,7 +4,6 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
-  type ReactElement,
 } from "react";
 
 import {
@@ -14,6 +13,7 @@ import {
 } from "../data/menu";
 import { addLine } from "../lib/cart/store";
 import { fetchMenuFromSheet } from "../lib/menuSheet";
+import { DishThumb } from "./DishThumb";
 
 interface MenuExplorerProps {
   readonly sections: readonly MenuSection[];
@@ -22,115 +22,28 @@ interface MenuExplorerProps {
 
 type ActiveCategory = "all" | MenuSectionId;
 
-const PLACEHOLDER_THUMB_LABEL =
-  "Ilustración de muestra, no es una foto real del plato";
-
-function PizzaThumb() {
-  return (
-    <svg
-      className="dish-thumb-art"
-      viewBox="0 0 48 48"
-      role="img"
-      aria-label={PLACEHOLDER_THUMB_LABEL}
-    >
-      <path
-        d="M24 5 43 39A22 22 0 0 1 5 39Z"
-        fill="var(--sun)"
-        stroke="var(--clay-dark)"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <circle cx="24" cy="17" r="2.6" fill="var(--clay)" />
-      <circle cx="18" cy="27" r="2.6" fill="var(--clay)" />
-      <circle cx="30" cy="29" r="2.6" fill="var(--clay)" />
-    </svg>
-  );
-}
-
-function EmpanadaThumb() {
-  return (
-    <svg
-      className="dish-thumb-art"
-      viewBox="0 0 48 48"
-      role="img"
-      aria-label={PLACEHOLDER_THUMB_LABEL}
-    >
-      <path
-        d="M6 27Q6 10 24 10Q42 10 42 27Q42 35 24 39Q6 35 6 27Z"
-        fill="var(--sun)"
-        stroke="var(--clay-dark)"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <g fill="var(--clay-dark)">
-        <circle cx="11" cy="25" r="1.6" />
-        <circle cx="17" cy="17" r="1.6" />
-        <circle cx="24" cy="13" r="1.6" />
-        <circle cx="31" cy="17" r="1.6" />
-        <circle cx="37" cy="25" r="1.6" />
-      </g>
-    </svg>
-  );
-}
-
-function GenericThumb() {
-  return (
-    <svg
-      className="dish-thumb-art"
-      viewBox="0 0 48 48"
-      role="img"
-      aria-label={PLACEHOLDER_THUMB_LABEL}
-    >
-      <circle
-        cx="24"
-        cy="24"
-        r="17"
-        fill="var(--sun)"
-        stroke="var(--clay-dark)"
-        strokeWidth="2"
-      />
-      <circle cx="24" cy="24" r="6" fill="var(--paper)" />
-    </svg>
-  );
-}
-
-const SECTION_THUMBS: Record<string, () => ReactElement> = {
-  pizzas: PizzaThumb,
-  empanadas: EmpanadaThumb,
-};
-
-const renderSectionThumb = (sectionId: MenuSectionId): ReactElement => {
-  const Thumb = SECTION_THUMBS[sectionId] ?? GenericThumb;
-  return <Thumb />;
-};
-
-interface DishThumbProps {
-  readonly imageUrl?: string | undefined;
-  readonly sectionId: MenuSectionId;
-}
-
-function DishThumb({ imageUrl, sectionId }: DishThumbProps) {
-  const [imageFailed, setImageFailed] = useState(false);
-
-  if (!imageUrl || imageFailed) {
-    return renderSectionThumb(sectionId);
-  }
-
-  return (
-    <img
-      src={imageUrl}
-      alt=""
-      loading="lazy"
-      onError={() => setImageFailed(true)}
-    />
-  );
-}
-
 const normalize = (value: string): string =>
   value
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase("es");
+
+const INGREDIENT_SPLIT_PATTERN = /(tomate|mozzarella)/gi;
+const INGREDIENT_MATCH_PATTERN = /^(tomate|mozzarella)$/i;
+
+function highlightIngredients(description: string) {
+  return description
+    .split(INGREDIENT_SPLIT_PATTERN)
+    .map((part, index) =>
+      INGREDIENT_MATCH_PATTERN.test(part) ? (
+        <strong key={index} className="ingredient-highlight">
+          {part}
+        </strong>
+      ) : (
+        part
+      ),
+    );
+}
 
 export function MenuExplorer({
   sections: initialSections,
@@ -329,7 +242,7 @@ export function MenuExplorer({
                 <p className="eyebrow">{section.eyebrow}</p>
                 <h3 id={`${section.id}-heading`}>{section.label}</h3>
                 <div className="section-copy">
-                  <p>{section.description}</p>
+                  {section.description && <p>{section.description}</p>}
                   {section.placeholder && (
                     <p className="section-draft-note">
                       Sabores de demostración pendientes de confirmar.
@@ -337,10 +250,9 @@ export function MenuExplorer({
                   )}
                   {section.id === "pizzas" && (
                     <p className="section-callout">
-                      Todas nuestras pizzas llevan tomate y mozzarella de base —
-                      si preferís sin alguno de los dos, avisanos, el precio no
-                      cambia. También podemos hacerlas con mozzarella sin
-                      lactosa, solo avisanos al pedir.
+                      {highlightIngredients(
+                        "Todas nuestras pizzas llevan tomate y mozzarella de base — si preferís sin alguno de los dos, avisanos, el precio no cambia. También podemos hacerlas con mozzarella sin lactosa, solo avisanos al pedir.",
+                      )}
                     </p>
                   )}
                 </div>

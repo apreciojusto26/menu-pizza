@@ -10,6 +10,7 @@ import { resolveCart } from "../lib/cart/resolve";
 import { clearCart } from "../lib/cart/store";
 import type { ResolvedCartLine } from "../lib/cart/types";
 import { createWhatsAppUrl } from "../lib/siteLinks";
+import { DishThumb } from "./DishThumb";
 
 interface CheckoutViewProps {
   readonly sections: readonly MenuSection[];
@@ -341,8 +342,16 @@ export function CheckoutView({
       <ul>
         {cart.lines.map((line) => (
           <li key={`${line.menuItemId}::${line.priceLabel}`}>
-            <span>
-              {line.itemName} ({line.priceLabel}) x{line.quantity}
+            <span className="checkout-summary-item">
+              <span className="line-thumb" aria-hidden="true">
+                <DishThumb
+                  imageUrl={line.imageUrl}
+                  sectionId={line.sectionId}
+                />
+              </span>
+              <span>
+                {line.itemName} ({line.priceLabel}) x{line.quantity}
+              </span>
             </span>
             <span>{formatAmount(line.lineTotal)}</span>
           </li>

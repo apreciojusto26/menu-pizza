@@ -6,6 +6,7 @@ import { useMenuCatalog } from "../hooks/useMenuCatalog";
 import { formatAmount } from "../lib/cart/format";
 import { MAX_QUANTITY_PER_LINE, resolveCart } from "../lib/cart/resolve";
 import { cartLineCount, removeLine, updateQuantity } from "../lib/cart/store";
+import { DishThumb } from "./DishThumb";
 
 interface CartDrawerProps {
   readonly sections: readonly MenuSection[];
@@ -98,6 +99,12 @@ export function CartDrawer({ sections, sheetUrl }: CartDrawerProps) {
               <ul className="cart-drawer-lines">
                 {cart.lines.map((line) => (
                   <li key={`${line.menuItemId}::${line.priceLabel}`}>
+                    <div className="line-thumb" aria-hidden="true">
+                      <DishThumb
+                        imageUrl={line.imageUrl}
+                        sectionId={line.sectionId}
+                      />
+                    </div>
                     <div className="cart-drawer-line-info">
                       <strong>{line.itemName}</strong>
                       <span>{line.priceLabel}</span>
