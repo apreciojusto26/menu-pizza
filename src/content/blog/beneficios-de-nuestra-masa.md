@@ -7,6 +7,10 @@ publishedAt: 2026-09-19
 
 En Italy Pizza no tenemos prisa con la masa. Cada bola de masa descansa varias horas antes de llegar al horno, y esa espera es la que marca la diferencia entre una pizza cualquiera y la nuestra.
 
+<video controls preload="metadata" width="100%">
+  <source src="/masa.mp4" type="video/mp4" />
+</video>
+
 ## ¿Qué pasa durante ese reposo?
 
 La levadura necesita tiempo para trabajar. Durante la fermentación larga va transformando los azúcares de la harina poco a poco, en vez de todo de golpe. Eso se nota en tres cosas muy concretas cuando comes la pizza:
