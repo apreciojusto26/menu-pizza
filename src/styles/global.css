@@ -589,6 +589,13 @@ a {
   font-size: 1.5rem;
 }
 
+.blog-content video {
+  display: block;
+  width: 100%;
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+}
+
 .blog-content strong {
   color: var(--leaf);
 }
@@ -1088,6 +1095,14 @@ button.dish-thumb:focus-visible {
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.dish-allergens {
+  margin: 0.5rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.68rem;
+  font-style: italic;
+  opacity: 0.85;
 }
 
 .badge--spicy {
@@ -1592,6 +1607,131 @@ button.dish-thumb:focus-visible {
   border-radius: 50%;
   background: var(--cream);
   content: "";
+}
+
+.delivery-map-section {
+  padding-block: 4rem 6rem;
+}
+
+.delivery-map-intro {
+  max-width: 40rem;
+  margin: 0 0 1.5rem;
+  color: var(--ink-soft);
+}
+
+.delivery-map {
+  width: 100%;
+  height: 450px;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  z-index: 0;
+}
+
+.delivery-marker-dot {
+  display: block;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid var(--paper);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.delivery-marker-dot--town {
+  width: 14px;
+  height: 14px;
+  background: var(--clay);
+}
+
+.delivery-origin-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.delivery-origin-pin-badge {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border-radius: 50%;
+  border: 3px solid var(--clay);
+  background: var(--paper);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.delivery-origin-pin-tail {
+  width: 0;
+  height: 0;
+  margin-top: -3px;
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+  border-top: 12px solid var(--clay);
+}
+
+.delivery-map .leaflet-popup-content-wrapper {
+  border-radius: 0.75rem;
+}
+
+.delivery-map .leaflet-popup-content {
+  margin: 0.65rem 0.85rem;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.delivery-map .leaflet-popup-content strong {
+  font-family: var(--display);
+  font-size: 0.95rem;
+}
+
+.delivery-town-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.5rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.delivery-town-item {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.75rem;
+  color: inherit;
+  background: var(--paper);
+  font: inherit;
+  font-size: 0.82rem;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.delivery-town-item:hover,
+.delivery-town-item:focus-visible {
+  border-color: var(--clay);
+}
+
+.delivery-town-item--selected {
+  border-color: var(--clay);
+  background: rgba(190, 41, 43, 0.08);
+}
+
+.delivery-town-item span:last-child {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+.delivery-town-item--selected span:last-child {
+  color: var(--clay-dark);
 }
 
 .site-footer {

@@ -6,6 +6,7 @@ import QRCode from "qrcode";
 import { CartDrawer } from "../components/CartDrawer";
 import { ContactCard } from "../components/ContactCard";
 import DeliveryBanner from "../components/DeliveryBanner.astro";
+import { DeliveryMap } from "../components/DeliveryMap";
 import { FloatingWhatsAppButton } from "../components/FloatingWhatsAppButton";
 import { LocationCard } from "../components/LocationCard";
 import { OrderIntro } from "../components/OrderIntro";
@@ -260,6 +261,19 @@ const contactSheetUrl =
           <li>Servido en tu pueblo, dentro de la comarca de Sayago</li>
         </ul>
       </aside>
+    </section>
+
+    <section
+      class="delivery-map-section page-shell"
+      aria-labelledby="delivery-map-heading"
+    >
+      <p class="eyebrow">Zona de reparto</p>
+      <h2 id="delivery-map-heading">Pueblos cercanos a Fariza</h2>
+      <p class="delivery-map-intro">
+        Distancia en línea recta desde Fariza a cada pueblo de la comarca de
+        Sayago.
+      </p>
+      <DeliveryMap client:visible />
     </section>
   </main>
 
