@@ -1,4 +1,5 @@
 import {
+  menuSections as staticMenuSections,
   SECTION_PRESETS,
   type BadgeTone,
   type MenuItem,
@@ -30,6 +31,46 @@ const BADGE_TONE_KEYWORDS: readonly (readonly [
 ];
 
 const normalize = normalizeSheetText;
+
+/**
+ * Los alérgenos son un dato de seguridad alimentaria fijo por receta, no algo
+ * que el personal deba tipear en la hoja de cálculo cada vez que edita un
+ * precio o una foto. Se mantienen en el código (data/menu.ts) y se buscan
+ * por nombre de plato normalizado, ya que el id que arma la hoja no coincide
+ * con el id estático (por ejemplo "pizzas-cuatro-quesos" vs
+ * "pizza-cuatro-quesos").
+ */
+const ALLERGENS_BY_ITEM_NAME = new Map<string, readonly number[]>(
+  staticMenuSections
+    .flatMap((section) => section.items)
+    .filter((item) => item.allergens && item.allergens.length > 0)
+    .map((item) => [normalize(item.name), item.allergens!] as const),
+);
+
+// La hoja lista cada sabor de Calzone y Pan de Ajo como un plato aparte
+// ("Calzone - Jamón York", ...), a diferencia de la carta base donde es un
+// único plato con varios precios. Comparten los mismos alérgenos por receta.
+for (const flavorName of [
+  "Calzone - Jamón York",
+  "Calzone - Bacon",
+  "Calzone - Pepperoni Picante",
+  "Calzone - Cheddar",
+]) {
+  ALLERGENS_BY_ITEM_NAME.set(
+    normalize(flavorName),
+    ALLERGENS_BY_ITEM_NAME.get(normalize("Calzone Italiano"))!,
+  );
+}
+for (const flavorName of [
+  "Pan de Ajo - Jamón York",
+  "Pan de Ajo - Bacon",
+  "Pan de Ajo - Cheddar",
+]) {
+  ALLERGENS_BY_ITEM_NAME.set(
+    normalize(flavorName),
+    ALLERGENS_BY_ITEM_NAME.get(normalize("Pan de Ajo Italiano"))!,
+  );
+}
 
 const slugify = (value: string): string =>
   normalize(value)
@@ -114,6 +155,7 @@ const rowToItem = (row: MenuSheetRow, sectionId: string): MenuItem | null => {
     prices,
     placeholder: false,
     imageUrl: imageUrl === "" ? undefined : imageUrl,
+    allergens: ALLERGENS_BY_ITEM_NAME.get(normalize(name)),
   };
 };
 

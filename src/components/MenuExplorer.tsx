@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import {
+  formatAllergens,
   formatPrice,
   type MenuSection,
   type MenuSectionId,
@@ -314,6 +315,11 @@ export function MenuExplorer({
                               </li>
                             ))}
                           </ul>
+                        )}
+                        {item.allergens && item.allergens.length > 0 && (
+                          <p className="dish-allergens">
+                            Alérgenos: {formatAllergens(item.allergens)}
+                          </p>
                         )}
                       </div>
                       <dl className="price-list">

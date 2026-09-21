@@ -22,7 +22,28 @@ export interface MenuItem {
   readonly prices: readonly PriceOption[];
   readonly placeholder: boolean;
   readonly imageUrl?: string | undefined;
+  readonly allergens?: readonly number[] | undefined;
 }
+
+export const ALLERGEN_LABELS: Record<number, string> = {
+  1: "Gluten",
+  2: "Crustáceos",
+  3: "Huevos",
+  4: "Pescado",
+  5: "Cacahuetes",
+  6: "Soja",
+  7: "Leche",
+  8: "Frutos de cáscara",
+  9: "Apio",
+  10: "Mostaza",
+  11: "Sésamo",
+  12: "Sulfitos",
+  13: "Altramuces",
+  14: "Moluscos",
+};
+
+export const formatAllergens = (codes: readonly number[]): string =>
+  codes.map((code) => ALLERGEN_LABELS[code] ?? "").join(", ");
 
 export interface MenuSection {
   readonly id: MenuSectionId;
@@ -170,6 +191,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Clásica", tone: "classic" }],
         prices: [price("Individual", 10)],
         placeholder: false,
+        allergens: [1, 7],
       },
       {
         id: "pizza-jamon-york-aceitunas",
@@ -178,6 +200,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Clásica", tone: "classic" }],
         prices: [price("Individual", 10)],
         placeholder: false,
+        allergens: [1, 7],
       },
       {
         id: "pizza-anchoas-aceitunas",
@@ -186,6 +209,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Clásica", tone: "classic" }],
         prices: [price("Individual", 10)],
         placeholder: false,
+        allergens: [1, 4, 7],
       },
       {
         id: "pizza-bacon-cheddar",
@@ -194,6 +218,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Clásica", tone: "classic" }],
         prices: [price("Individual", 10)],
         placeholder: false,
+        allergens: [1, 7],
       },
       {
         id: "pizza-bbq-ternera-bacon",
@@ -202,6 +227,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Clásica", tone: "classic" }],
         prices: [price("Individual", 10)],
         placeholder: false,
+        allergens: [1, 7, 10, 12],
       },
       {
         id: "pizza-pepperoni",
@@ -210,6 +236,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Clásica", tone: "classic" }],
         prices: [price("Individual", 10)],
         placeholder: false,
+        allergens: [1, 7, 12],
       },
       {
         id: "pizza-verduras-variadas",
@@ -221,6 +248,7 @@ export const menuSections: readonly MenuSection[] = [
         ],
         prices: [price("Individual", 10)],
         placeholder: false,
+        allergens: [1, 7, 9],
       },
       {
         id: "pizza-atun-tomate",
@@ -229,6 +257,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Clásica", tone: "classic" }],
         prices: [price("Individual", 10)],
         placeholder: false,
+        allergens: [1, 4, 7],
       },
       {
         id: "pizza-carbonara-bacon-champinones",
@@ -238,6 +267,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Clásica", tone: "classic" }],
         prices: [price("Individual", 10)],
         placeholder: false,
+        allergens: [1, 3, 7],
       },
       {
         id: "pizza-panceta-tomate",
@@ -246,6 +276,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Clásica", tone: "classic" }],
         prices: [price("Individual", 10)],
         placeholder: false,
+        allergens: [1, 7],
       },
       {
         id: "pizza-parmesano-padano-serrano",
@@ -254,6 +285,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Premium", tone: "new" }],
         prices: [price("Individual", 11.9)],
         placeholder: false,
+        allergens: [1, 7],
       },
       {
         id: "pizza-chorizo-mozzarella-fresca",
@@ -262,6 +294,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Premium", tone: "new" }],
         prices: [price("Individual", 11.9)],
         placeholder: false,
+        allergens: [1, 7, 12],
       },
       {
         id: "pizza-gorgonzola-nuez",
@@ -273,6 +306,7 @@ export const menuSections: readonly MenuSection[] = [
         ],
         prices: [price("Individual", 11.9)],
         placeholder: false,
+        allergens: [1, 7, 8],
       },
       {
         id: "pizza-roquefort-alcaparras",
@@ -284,6 +318,7 @@ export const menuSections: readonly MenuSection[] = [
         ],
         prices: [price("Individual", 11.9)],
         placeholder: false,
+        allergens: [1, 7, 12],
       },
       {
         id: "pizza-mortadela-burrata",
@@ -292,6 +327,7 @@ export const menuSections: readonly MenuSection[] = [
         badges: [{ label: "Premium", tone: "new" }],
         prices: [price("Individual", 11.9)],
         placeholder: false,
+        allergens: [1, 7, 8, 12],
       },
     ],
   },
@@ -313,6 +349,7 @@ export const menuSections: readonly MenuSection[] = [
           price("Cheddar", 8),
         ],
         placeholder: false,
+        allergens: [1, 7, 12],
       },
       {
         id: "pan-de-ajo-italiano",
@@ -326,6 +363,7 @@ export const menuSections: readonly MenuSection[] = [
           price("Cheddar", 7),
         ],
         placeholder: false,
+        allergens: [1, 7],
       },
     ],
   },
@@ -346,6 +384,7 @@ export const menuSections: readonly MenuSection[] = [
           price("Media docena (6+1 gratis)", 16.8),
         ],
         placeholder: false,
+        allergens: [1, 3],
       },
       {
         id: "empanada-ternera-picante",
@@ -357,6 +396,7 @@ export const menuSections: readonly MenuSection[] = [
           price("Media docena (6+1 gratis)", 16.8),
         ],
         placeholder: false,
+        allergens: [1, 3],
       },
       {
         id: "empanada-pollo",
@@ -368,6 +408,7 @@ export const menuSections: readonly MenuSection[] = [
           price("Media docena (6+1 gratis)", 16.8),
         ],
         placeholder: false,
+        allergens: [1, 3],
       },
       {
         id: "empanada-jamon-queso",
@@ -379,6 +420,7 @@ export const menuSections: readonly MenuSection[] = [
           price("Media docena (6+1 gratis)", 16.8),
         ],
         placeholder: false,
+        allergens: [1, 3, 7],
       },
       {
         id: "empanada-humita",
@@ -390,6 +432,7 @@ export const menuSections: readonly MenuSection[] = [
           price("Media docena (6+1 gratis)", 16.8),
         ],
         placeholder: false,
+        allergens: [1, 3, 7],
       },
       {
         id: "empanada-cebolla-caramelizada",
@@ -401,6 +444,7 @@ export const menuSections: readonly MenuSection[] = [
           price("Media docena (6+1 gratis)", 16.8),
         ],
         placeholder: false,
+        allergens: [1, 3, 7],
       },
     ],
   },
