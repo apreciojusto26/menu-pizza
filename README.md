@@ -10,18 +10,18 @@ Requiere Node.js 22.19 o superior para satisfacer también los requisitos de
 las dependencias transitivas actuales de Astro.
 
 ```bash
-npm install
+pnpm install
 cp .env.example .env
-npm run dev
+pnpm run dev
 ```
 
 Verificaciones:
 
 ```bash
-npm test
-npm run typecheck
-npm run build
-npm run format:check
+pnpm test
+pnpm run typecheck
+pnpm run build
+pnpm run format:check
 ```
 
 ## Editar el menú sin tocar código (Google Sheets)

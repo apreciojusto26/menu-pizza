@@ -5,3 +5,5 @@ sheets-templates/
 .env
 .DS_Store
 .vercel
+package-lock.json
+yarn.lock
