@@ -2,7 +2,8 @@
 export const prerender = true;
 
 import { CheckoutView } from "../components/CheckoutView";
-import { menuSections, restaurant } from "../data/menu";
+import { WhatsAppOrderButton } from "../components/WhatsAppOrderButton";
+import { CART_ENABLED, menuSections, restaurant } from "../data/menu";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const initialContact = {
@@ -47,14 +48,32 @@ const contactSheetUrl =
 
   <main id="contenido">
     <div class="page-shell checkout-wrap">
-      <h1>Tu pedido</h1>
-      <CheckoutView
-        client:load
-        sections={menuSections}
-        sheetUrl={menuSheetUrl}
-        initialContact={initialContact}
-        contactSheetUrl={contactSheetUrl}
-      />
+      {
+        CART_ENABLED ? (
+          <>
+            <h1>Tu pedido</h1>
+            <CheckoutView
+              client:load
+              sections={menuSections}
+              sheetUrl={menuSheetUrl}
+              initialContact={initialContact}
+              contactSheetUrl={contactSheetUrl}
+            />
+          </>
+        ) : (
+          <div class="checkout-empty" role="status">
+            <p>Por ahora los pedidos se hacen por WhatsApp.</p>
+            <WhatsAppOrderButton
+              client:load
+              initialContact={initialContact}
+              sheetUrl={contactSheetUrl}
+            />
+            <a class="button button--ghost" href="/carta">
+              Volver a la carta
+            </a>
+          </div>
+        )
+      }
     </div>
   </main>
 </BaseLayout>

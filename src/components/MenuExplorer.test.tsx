@@ -1,10 +1,18 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { menuSections } from "../data/menu";
 import { $cartLines, clearCart } from "../lib/cart/store";
 import { MenuExplorer } from "./MenuExplorer";
+
+// El lanzamiento actual esconde "Agregar" (CART_ENABLED=false en data/menu.ts,
+// pedidos solo por WhatsApp por ahora) — este archivo sigue probando la
+// funcionalidad del carrito en sí, que queda lista para reactivar.
+vi.mock("../data/menu", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../data/menu")>()),
+  CART_ENABLED: true,
+}));
 
 describe("MenuExplorer", () => {
   beforeEach(() => {

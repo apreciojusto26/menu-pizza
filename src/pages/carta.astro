@@ -6,7 +6,7 @@ import DeliveryBanner from "../components/DeliveryBanner.astro";
 import { FloatingWhatsAppButton } from "../components/FloatingWhatsAppButton";
 import { MenuExplorer } from "../components/MenuExplorer";
 import { WhatsAppOrderButton } from "../components/WhatsAppOrderButton";
-import { menuSections, restaurant } from "../data/menu";
+import { CART_ENABLED, menuSections, restaurant } from "../data/menu";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const initialContact = {
@@ -83,5 +83,9 @@ const contactSheetUrl =
     initialContact={initialContact}
     sheetUrl={contactSheetUrl}
   />
-  <CartDrawer client:load sections={menuSections} sheetUrl={menuSheetUrl} />
+  {
+    CART_ENABLED && (
+      <CartDrawer client:load sections={menuSections} sheetUrl={menuSheetUrl} />
+    )
+  }
 </BaseLayout>

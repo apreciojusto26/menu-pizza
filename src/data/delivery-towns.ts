@@ -9,6 +9,30 @@ export interface DeliveryTown {
 /** Radio de reparto mostrado en el mapa — coincide con el corte usado para filtrar deliveryTowns. */
 export const DELIVERY_RADIUS_KM = 20;
 
+/**
+ * Franjas de precio de envío por distancia. `maxKm` es el límite superior
+ * (inclusive) de cada franja — la primera cuyo `maxKm` alcance la distancia
+ * del pueblo es la que aplica.
+ */
+export const DELIVERY_FEE_TIERS: readonly {
+  readonly maxKm: number;
+  readonly fee: number;
+}[] = [
+  { maxKm: 6, fee: 3.5 },
+  { maxKm: 14.9, fee: 5 },
+  { maxKm: 20, fee: 7 },
+];
+
+/** Precio de envío para una distancia dada, o null si queda fuera de toda franja. */
+export const getDeliveryFee = (km: number): number | null =>
+  DELIVERY_FEE_TIERS.find((tier) => km <= tier.maxKm)?.fee ?? null;
+
+/** Precio de envío equivalente por km (tarifa ÷ distancia), o null si no hay tarifa. */
+export const getDeliveryFeePerKm = (km: number): number | null => {
+  const fee = getDeliveryFee(km);
+  return fee === null || km <= 0 ? null : fee / km;
+};
+
 /** Fariza (Plaza la Iglesia 7) — sede del local, centro del mapa de reparto. */
 export const DELIVERY_ORIGIN: DeliveryTown = {
   id: "fariza",
@@ -79,6 +103,13 @@ export const deliveryTowns: readonly DeliveryTown[] = [
   },
   { id: "moralina", name: "Moralina", lat: 41.48906, lng: -6.13756, km: 13.5 },
   {
+    id: "bermillo-de-sayago",
+    name: "Bermillo de Sayago",
+    lat: 41.36521,
+    lng: -6.11174,
+    km: 14.7,
+  },
+  {
     id: "villardiegua-de-la-ribera",
     name: "Villardiegua de la Ribera",
     lat: 41.53698,
@@ -98,12 +129,5 @@ export const deliveryTowns: readonly DeliveryTown[] = [
     lat: 41.31741,
     lng: -6.39492,
     km: 15.4,
-  },
-  {
-    id: "bermillo-de-sayago",
-    name: "Bermillo de Sayago",
-    lat: 41.35721,
-    lng: -6.06566,
-    km: 18.6,
   },
 ];

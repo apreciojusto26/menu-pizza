@@ -1,3 +1,17 @@
+---
+import { restaurant } from "../data/menu";
+import { DeliveryBannerWhatsAppLink } from "./DeliveryBannerWhatsAppLink";
+
+const initialContact = {
+  number: restaurant.whatsapp.number,
+  display: restaurant.whatsapp.display,
+  message: restaurant.whatsapp.defaultMessage,
+  placeholder: restaurant.whatsapp.placeholder,
+};
+const contactSheetUrl =
+  import.meta.env.PUBLIC_CONTACT_SHEET_URL?.trim() || undefined;
+---
+
 <div class="delivery-banner mt-8" role="region" aria-label="Información de delivery">
   <div class="delivery-banner-inner">
     <p>
@@ -27,8 +41,19 @@
     <span class="delivery-banner-sep" aria-hidden="true"></span>
 
     <p>
-      <span>A partir de <strong>30 €</strong></span>
-      <span class="delivery-banner-pill">¡Envío GRATIS!</span>
+      <span>Costo de <strong class="delivery-banner-shipping">envío</strong> según tu zona —
+        <DeliveryBannerWhatsAppLink
+          client:visible
+          initialContact={initialContact}
+          sheetUrl={contactSheetUrl}
+        />
+      </span>
+    </p>
+
+    <span class="delivery-banner-sep" aria-hidden="true"></span>
+
+    <p>
+      <span>Se puede pagar con tarjeta o en efectivo — <strong>paga con tarjeta en tu domicilio</strong> con datáfono</span>
     </p>
   </div>
 </div>

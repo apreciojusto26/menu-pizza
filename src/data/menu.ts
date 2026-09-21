@@ -86,6 +86,16 @@ export interface RestaurantInfo {
   };
 }
 
+/**
+ * Lanzamiento rápido: pedidos solo por WhatsApp, sin carrito ni pago con
+ * tarjeta (SumUp queda armado y anda, pero oculto). El carrito calculaba el
+ * envío gratis por monto fijo sin importar la distancia — con pedidos de muy
+ * lejos eso no es rentable, así que por ahora el envío se acuerda charlando
+ * por WhatsApp. Volver a poner en `true` reactiva "Agregar" en la carta y el
+ * carrito/checkout en index.astro, carta.astro y checkout.astro.
+ */
+export const CART_ENABLED = false;
+
 const restaurantName = "Italy Pizza";
 const envValue = (value: string | undefined): string => value?.trim() ?? "";
 const isConfirmed = (value: string | undefined): boolean => value === "true";
@@ -165,7 +175,7 @@ export const restaurant: RestaurantInfo = {
     display: whatsappDisplay || "Contacto por confirmar",
     defaultMessage:
       whatsappMessage ||
-      `Hola, he visto la carta digital de ${restaurantName} y quiero hacer un pedido.`,
+      `Hola, he visto la carta digital de ${restaurantName} y quiero hacer un pedido.\n\nMi pedido:\n\nDirección de entrega:`,
     placeholder:
       !isConfirmed(import.meta.env.PUBLIC_WHATSAPP_CONFIRMED) ||
       !whatsappNumber ||

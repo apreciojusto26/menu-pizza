@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import {
+  CART_ENABLED,
   formatAllergens,
   formatPrice,
   type MenuSection,
@@ -29,8 +30,8 @@ const normalize = (value: string): string =>
     .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase("es");
 
-const INGREDIENT_SPLIT_PATTERN = /(tomate|mozzarella)/gi;
-const INGREDIENT_MATCH_PATTERN = /^(tomate|mozzarella)$/i;
+const INGREDIENT_SPLIT_PATTERN = /(tomate|mozzarella|orégano)/gi;
+const INGREDIENT_MATCH_PATTERN = /^(tomate|mozzarella|orégano)$/i;
 
 function highlightIngredients(description: string) {
   return description
@@ -252,7 +253,7 @@ export function MenuExplorer({
                   {section.id === "pizzas" && (
                     <p className="section-callout">
                       {highlightIngredients(
-                        "Todas nuestras pizzas llevan tomate y mozzarella de base — si preferís sin alguno de los dos, avisanos, el precio no cambia. También podemos hacerlas con mozzarella sin lactosa, solo avisanos al pedir.",
+                        "Todas nuestras pizzas llevan tomate, mozzarella y orégano de base — si preferís sin alguno de los tres, avisanos, el precio no cambia. También podemos hacerlas con mozzarella sin lactosa, solo avisanos al pedir.",
                       )}
                     </p>
                   )}
@@ -334,16 +335,20 @@ export function MenuExplorer({
                                 </span>
                               )}
                             </dd>
-                            {!item.placeholder && !price.placeholder && (
-                              <button
-                                type="button"
-                                className="add-to-cart-button"
-                                onClick={() => addLine(item.id, price.label, 1)}
-                                aria-label={`Agregar ${item.name}, ${price.label}, al carrito`}
-                              >
-                                Agregar
-                              </button>
-                            )}
+                            {CART_ENABLED &&
+                              !item.placeholder &&
+                              !price.placeholder && (
+                                <button
+                                  type="button"
+                                  className="add-to-cart-button"
+                                  onClick={() =>
+                                    addLine(item.id, price.label, 1)
+                                  }
+                                  aria-label={`Agregar ${item.name}, ${price.label}, al carrito`}
+                                >
+                                  Agregar
+                                </button>
+                              )}
                           </div>
                         ))}
                       </dl>

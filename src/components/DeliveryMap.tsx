@@ -4,7 +4,10 @@ import {
   DELIVERY_ORIGIN,
   DELIVERY_RADIUS_KM,
   deliveryTowns,
+  getDeliveryFee,
+  getDeliveryFeePerKm,
 } from "../data/delivery-towns";
+import { formatAmount } from "../lib/cart/format";
 
 type LeafletLib = typeof import("leaflet");
 type L = LeafletLib extends { default: infer D } ? D : LeafletLib;
@@ -100,10 +103,14 @@ export function DeliveryMap() {
           },
         ).addTo(map);
 
+        const fee = getDeliveryFee(town.km);
+        const feePerKm = getDeliveryFeePerKm(town.km);
         const marker = L.marker([town.lat, town.lng], { icon: townIcon(L) })
           .addTo(map)
           .bindPopup(
-            `<strong>${town.name}</strong><br />${town.km.toFixed(1)} km desde Fariza`,
+            `<strong>${town.name}</strong><br />${town.km.toFixed(1)} km desde Fariza${
+              fee !== null ? `<br />Envío: ${formatAmount(fee)}` : ""
+            }${feePerKm !== null ? `<br />≈ ${formatAmount(feePerKm)}/km` : ""}`,
             { closeButton: false },
           )
           .on("click", () => setSelectedId(town.id));
@@ -149,22 +156,38 @@ export function DeliveryMap() {
         className="delivery-town-list"
         aria-label="Pueblos cercanos, seleccioná uno para ubicarlo en el mapa"
       >
-        {deliveryTowns.map((town) => (
-          <li key={town.id}>
-            <button
-              type="button"
-              className={
-                selectedId === town.id
-                  ? "delivery-town-item delivery-town-item--selected"
-                  : "delivery-town-item"
-              }
-              onClick={() => goToTown(town.id, town.lat, town.lng)}
-            >
-              <span>{town.name}</span>
-              <span>{town.km.toFixed(1)} km</span>
-            </button>
-          </li>
-        ))}
+        {deliveryTowns.map((town) => {
+          const fee = getDeliveryFee(town.km);
+          const feePerKm = getDeliveryFeePerKm(town.km);
+          return (
+            <li key={town.id}>
+              <button
+                type="button"
+                className={
+                  selectedId === town.id
+                    ? "delivery-town-item delivery-town-item--selected"
+                    : "delivery-town-item"
+                }
+                onClick={() => goToTown(town.id, town.lat, town.lng)}
+              >
+                <span>{town.name}</span>
+                <span className="delivery-town-item-meta">
+                  <span>{town.km.toFixed(1)} km</span>
+                  {fee !== null && (
+                    <span className="delivery-town-item-fee">
+                      Envío: {formatAmount(fee)}
+                    </span>
+                  )}
+                  {feePerKm !== null && (
+                    <span className="delivery-town-item-per-km">
+                      ≈ {formatAmount(feePerKm)}/km
+                    </span>
+                  )}
+                </span>
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </>
   );

@@ -11,7 +11,12 @@ import { FloatingWhatsAppButton } from "../components/FloatingWhatsAppButton";
 import { LocationCard } from "../components/LocationCard";
 import { OrderIntro } from "../components/OrderIntro";
 import { ScheduleCard } from "../components/ScheduleCard";
-import { menuContentStatus, menuSections, restaurant } from "../data/menu";
+import {
+  CART_ENABLED,
+  menuContentStatus,
+  menuSections,
+  restaurant,
+} from "../data/menu";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { addLogoToQrSvg } from "../lib/qrLogo";
 import {
@@ -82,7 +87,11 @@ const contactSheetUrl =
           <small>Pizzas &amp; empanadas</small>
         </span>
       </a>
-      <a class="nav-order" href="#pedidos">Cómo pedir</a>
+      <div class="nav-links">
+        <a class="nav-order" href="#pedidos">Cómo pedir</a>
+        <a class="nav-order" href="/carta">Ver la carta</a>
+        <a class="nav-order" href="/blog">Blog</a>
+      </div>
     </nav>
 
     <div class="hero page-shell" id="inicio">
@@ -116,13 +125,13 @@ const contactSheetUrl =
             height="1254"
           />
         </div>
-        <p class="hero-badge hero-badge--cream">Masa<br />con tiempo</p>
+        <p class="hero-badge hero-badge--cream">Masa de<br />larga<br />fermentación</p>
       </div>
     </div>
 
     <div class="hero-ticker" aria-label="Especialidades de la casa">
-      <span>Pizza artesanal</span><i aria-hidden="true">◆</i>
-      <span>Empanadas doradas</span><i aria-hidden="true">◆</i>
+      <span>Pizza estilo Napolitana</span><i aria-hidden="true">◆</i>
+      <span>Empanadas argentinas</span><i aria-hidden="true">◆</i>
       <span>Pedidos sencillos</span><i aria-hidden="true">◆</i>
       <span>
         {
@@ -319,5 +328,9 @@ const contactSheetUrl =
     initialContact={initialContact}
     sheetUrl={contactSheetUrl}
   />
-  <CartDrawer client:load sections={menuSections} sheetUrl={menuSheetUrl} />
+  {
+    CART_ENABLED && (
+      <CartDrawer client:load sections={menuSections} sheetUrl={menuSheetUrl} />
+    )
+  }
 </BaseLayout>
